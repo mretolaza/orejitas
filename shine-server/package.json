@@ -1,0 +1,28 @@
+{
+  "name": "shine-server",
+  "version": "1.0.0",
+  "description": "Server to serve by shine protocol",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mretolaza/shine-server.git"
+  },
+  "author": "María Mercedes Retolaza Reyna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mretolaza/shine-server/issues"
+  },
+  "homepage": "https://github.com/mretolaza/shine-server#readme",
+  "devDependencies": {
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0"
+  }
+}
