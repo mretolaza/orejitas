@@ -4,7 +4,7 @@ const client = new net.Socket();
 
 client.connect({
   host: 'localhost',
-  port: 2222,
+  port: 5222,
 });
 
 client.on('connect', () => {
