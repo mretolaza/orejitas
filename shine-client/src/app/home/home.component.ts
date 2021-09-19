@@ -135,11 +135,13 @@ export class HomeComponent implements OnInit {
       const joinToRoomSpark = {
         type: 'joinRoom',
         data: {
-          roomId: this.roomEnter.roomID,
+          roomId: this.roomEnterForm.controls.id.value,
           nickname: 'AngularUsr',
         },
       };
-  
+      
+      console.log('joinToRoomSpark------->', joinToRoomSpark)
+
       this.socketWebService.joinRoom(joinToRoomSpark);
   
     }

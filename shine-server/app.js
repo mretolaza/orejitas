@@ -126,7 +126,6 @@ io.on('connection', function (socket) {
     socket.emit('joinRoom', response);
   });
 
-
   socket.on('chat', (res) => {
     socket.to(res.data.roomId).emit('chat', res);
   });
