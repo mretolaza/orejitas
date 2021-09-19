@@ -1,4 +1,5 @@
 const Player = require('./Player');
+const cards = require('./Cards');
 
 // Return random ID
 const makeId = () => {
@@ -20,6 +21,8 @@ module.exports = class Room {
     this.maxPlayers = maxPlayers;
     this.players = [];
     this.admin = admin;
+    this.roomDeck = cards.sort(()=> Math.random() - 0.5);
+    this.start = false;
   }
 
   join(name, socket) {
@@ -31,5 +34,16 @@ module.exports = class Room {
 
   get countPlayers() {
     return this.players.length;
+  }
+
+  get roomAdmin() {
+    return this.admin;
+  }
+
+  get firstPlayer() {
+    const fp = this.players.sort(()=> Math.random() - 0.5)[0];
+    const i = this.players.indexOf(fp);
+    this.players[i].setTurn();
+    return this.players[i].name;
   }
 };

@@ -26,8 +26,8 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
   const handshake = socket.id;
-  
-  let  game  = 'Orejitas';
+
+  let game = 'Orejitas';
 
   console.log(`${chalk.green(`Nuevo dispositivo: ${handshake}`)} entrado al juego ${game}`);
 
@@ -47,26 +47,27 @@ io.on('connection', function (socket) {
 
     // Add room to rooms list
     rooms.push(room);
-    
+
     console.log(rooms);
-    
+
     const response = {
       sparkId: 1,
       type: 'response',
       success: true,
       data: {
         createdId: room.id,
+        cards: room.roomDeck
       },
     };
 
     socket.join(room.id)
-    
+
     console.log(`${chalk.green(`Nuevo dispositivo: ${handshake}`)} entrado a la sala ${room.id}`);
 
     socket.emit('createRoom', response);
   })
 
-  
+
 
   // Join room
   socket.on('joinRoom', (res) => {
@@ -87,7 +88,7 @@ io.on('connection', function (socket) {
 
     if (roomToJoin) {
       if (roomToJoin.countPlayers < roomToJoin.maxPlayers) {
-      // Join to room
+        // Join to room
         roomToJoin.join(res.data.nickname, socket);
 
         // Create players info
@@ -116,7 +117,9 @@ io.on('connection', function (socket) {
         }, roomToJoin.players);
 
         // Add roomId to socket
-        socket.joinedRoom = roomToJoin.id;
+        //socket.joinedRoom = roomToJoin.id;
+
+        socket.join(res.data.roomId)
       } else {
         response.success = false;
         response.data.message = 'Room is already full';
@@ -126,16 +129,66 @@ io.on('connection', function (socket) {
     socket.emit('joinRoom', response);
   });
 
+  // chat para una sala
   socket.on('chat', (res) => {
-    socket.to(res.data.roomId).emit('chat', res);
+
+    const response = {
+      sparkId: 3,
+      type: 'response',
+      success: true,
+      data: res.data,
+    };
+
+    socket.to(res.data.roomId).emit('chat', response);
+  });
+
+  // start game
+  socket.on('startRoom', (res) => {
+
+    // room to start game
+    const roomToStart = rooms.find((room) => room.id === res.data.roomId);
+    console.log('into start', roomToStart)
+    // Default response
+    const response = {
+      sparkId: 4,
+      type: 'response',
+      success: false,
+      data: {
+        message: 'Room does not exists',
+      },
+    };
+
+    if (roomToStart) {
+      if (roomToStart.roomAdmin == res.data.nickname) {
+        if (roomToStart.countPlayers == roomToStart.maxPlayers) {
+          roomToStart.start = true
+
+          response.success = true;
+          response.data = {
+            start: roomToStart.start,
+            firstPlayer: roomToStart.firstPlayer
+          }
+        } else {
+          response.success = false;
+          response.data = {
+            message: 'Waiting players...'
+          }
+        }
+      } else {
+        response.success = false;
+        response.data = {
+          message: 'You are not admin!'
+        }
+      }
+    }
+
+    socket.emit('startRoom', response);
   });
 
   // handler  
   socket.on('evento', (res) => {
     // Emite el mensaje a todos lo miembros de las sala menos a la persona que envia el mensaje  
-
     socket.emit(game).emit('evento', res);
-
   })
 
 
