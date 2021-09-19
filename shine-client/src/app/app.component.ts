@@ -29,28 +29,28 @@ export class AppComponent implements OnInit {
 
         var navbar = document.getElementsByTagName('nav')[0];
 
-        // If they scrolled down and are past the navbar, add class .headroom--unpinned.
-        // This is necessary so you never see what is "behind" the navbar.
-        if (st > lastScrollTop && st > navbarHeight){
-            // Scroll Down
-            if (navbar.classList.contains('headroom--pinned')) {
-                navbar.classList.remove('headroom--pinned');
-                navbar.classList.add('headroom--unpinned');
-            }
-            // $('.navbar.headroom--pinned').removeClass('headroom--pinned').addClass('headroom--unpinned');
-        } else {
-            // Scroll Up
-            //  $(window).height()
-            if(st + window.innerHeight < document.body.scrollHeight) {
-                // $('.navbar.headroom--unpinned').removeClass('headroom--unpinned').addClass('headroom--pinned');
-                if (navbar.classList.contains('headroom--unpinned')) {
-                    navbar.classList.remove('headroom--unpinned');
-                    navbar.classList.add('headroom--pinned');
-                }
-            }
-        }
+        // // If they scrolled down and are past the navbar, add class .headroom--unpinned.
+        // // This is necessary so you never see what is "behind" the navbar.
+        // if (st > lastScrollTop && st > navbarHeight){
+        //     // Scroll Down
+        //     if (navbar.classList.contains('headroom--pinned')) {
+        //         navbar.classList.remove('headroom--pinned');
+        //         navbar.classList.add('headroom--unpinned');
+        //     }
+        //     // $('.navbar.headroom--pinned').removeClass('headroom--pinned').addClass('headroom--unpinned');
+        // } else {
+        //     // Scroll Up
+        //     //  $(window).height()
+        //     if(st + window.innerHeight < document.body.scrollHeight) {
+        //         // $('.navbar.headroom--unpinned').removeClass('headroom--unpinned').addClass('headroom--pinned');
+        //         if (navbar.classList.contains('headroom--unpinned')) {
+        //             navbar.classList.remove('headroom--unpinned');
+        //             navbar.classList.add('headroom--pinned');
+        //         }
+        //     }
+        // }
 
-        lastScrollTop = st;
+        // lastScrollTop = st;
     };
     ngOnInit() {
       var navbar : HTMLElement = this.element.nativeElement.children[0].children[0];
@@ -64,10 +64,10 @@ export class AppComponent implements OnInit {
               const number = window.scrollY;
               if (number > 150 || window.pageYOffset > 150) {
                   // add logic
-                  navbar.classList.add('headroom--not-top');
+                  //navbar.classList.add('headroom--not-top');
               } else {
                   // remove logic
-                  navbar.classList.remove('headroom--not-top');
+                  //navbar.classList.remove('headroom--not-top');
               }
           });
       });
