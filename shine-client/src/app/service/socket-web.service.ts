@@ -12,6 +12,7 @@ export class SocketWebService extends Socket {
   @Output() outEven: EventEmitter<any> = new EventEmitter();
   @Output() outCreateRoom: EventEmitter<any> = new EventEmitter();
   @Output() outjoinRoom: EventEmitter<any> = new EventEmitter();
+  @Output() chat: EventEmitter<any> = new EventEmitter();
 
   constructor(
     //public cookieService: CookieService,
@@ -51,6 +52,16 @@ export class SocketWebService extends Socket {
   listenJoinRoom = () => {
     this.ioSocket.on('joinRoom', res => {
       this.outjoinRoom.emit(res)
+    });   
+  }
+
+  chatSend = (data = {}) => {
+    this.ioSocket.emit('chat', data);   
+  }
+
+  chatListen = () => {
+    this.ioSocket.on('chat', res => {
+      this.chat.emit(res)
     });   
   }
 }

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 
+import { SocketWebService } from '../service/socket-web.service';
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -9,7 +11,21 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 
 export class HomeComponent implements OnInit {
-    constructor(private router: Router) { }
+    constructor(
+      private router: Router,
+      private socketWebService: SocketWebService,  
+    ) { 
+
+      this.socketWebService.outCreateRoom.subscribe(res => {
+        console.log('escuchadno--->');
+        console.log('outCreateRoom--->', res);
+      })
+  
+      this.socketWebService.outjoinRoom.subscribe(res => {
+        console.log('escuchadno--->');
+        console.log('outjoinRoom--->', res);
+      })
+    }
 
     ngOnInit() { }
 
@@ -102,5 +118,37 @@ export class HomeComponent implements OnInit {
 
     focus;
     focus1;
+
+    createGame() {
+      console.log('holi')
+  
+      const createRoomSpark = {
+        type: 'createRoom',
+        data: {
+          name: 'Nueva Sala',
+          description: 'Sala para grupo 1',
+          maxPlayers: 4,
+          userNickname: 'Admin',
+        },
+      };
+  
+      // this.socketWebService.emitEvent(createRoomSpark)
+      this.socketWebService.createRoom(createRoomSpark);
+  
+    }
+  
+    joinGame() {
+  
+      const joinToRoomSpark = {
+        type: 'joinRoom',
+        data: {
+          roomId: this.roomEnter.roomID,
+          nickname: 'AngularUsr',
+        },
+      };
+  
+      this.socketWebService.joinRoom(joinToRoomSpark);
+  
+    }
     
 }

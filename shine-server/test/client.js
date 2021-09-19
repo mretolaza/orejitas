@@ -42,6 +42,7 @@ client.on('connect', () => {
   const messageSpark = {
     type: 'message',
     data: {
+      roomId: "asñlk",
       message: 'Hola a todos',
     },
   };

@@ -27,7 +27,9 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
   const handshake = socket.id;
   
-  let  nameRoom  = 'Orejitas';
+  let  game  = 'Orejitas';
+
+  console.log(`${chalk.green(`Nuevo dispositivo: ${handshake}`)} entrado al juego ${game}`);
 
   // create a room
   socket.on('createRoom', (res) => {
@@ -64,7 +66,7 @@ io.on('connection', function (socket) {
     socket.emit('createRoom', response);
   })
 
-  console.log(`${chalk.green(`Nuevo dispositivo: ${handshake}`)} entrado al juego ${nameRoom}`);
+  
 
   // Join room
   socket.on('joinRoom', (res) => {
@@ -124,11 +126,16 @@ io.on('connection', function (socket) {
     socket.emit('joinRoom', response);
   });
 
+
+  socket.on('chat', (res) => {
+    socket.to(res.data.roomId).emit('chat', res);
+  });
+
   // handler  
   socket.on('evento', (res) => {
     // Emite el mensaje a todos lo miembros de las sala menos a la persona que envia el mensaje  
 
-    socket.emit(nameRoom).emit('evento', res);
+    socket.emit(game).emit('evento', res);
 
   })
 
