@@ -106,13 +106,13 @@
                     </div>
                   </div>
                   <div class="card-body px-lg-5 py-lg-5">
-                    <form role="form" [formGroup]="roomEnterForm">
+                    <form role="form" [formGroup]="roomEnterForm" (ngSubmit)="enterRoom()">
                       <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
                         <div class="input-group input-group-alternative">
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-controller"></i></span>
                           </div>
-                          <input [(ngModel)]="roomEnter.roomID" class="form-control" placeholder="Id de la sala" type="text" (focus)="focus=true"
+                          <input formControlName="id" class="form-control" minlength="6" placeholder="Id de la sala" type="number" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
@@ -121,7 +121,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
                           </div>
-                          <input [(ngModel)]="roomEnter.playerNickName" class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
+                          <input formControlName="playerNickName" class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>

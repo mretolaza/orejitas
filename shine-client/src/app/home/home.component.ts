@@ -55,18 +55,6 @@ export class HomeComponent implements OnInit {
         playerNickName: new FormControl('')
     });
 
-    room = {
-        roomName: '',
-        roomDescription: '',
-        roomPlayers: 0,
-        ownerNickName: ''
-    }
-
-    roomEnter = {
-        roomID: 0,
-        playerNickName: ''
-    }
-
     classes: string[] = this.initCssClases()
 
     goToForm(isEnter: boolean): void {
@@ -111,7 +99,12 @@ export class HomeComponent implements OnInit {
     }
 
     enterRoom(){
-        console.log(this.roomEnter)
+        if((this.roomEnterForm.controls.id.value>99999) && (this.roomEnterForm.controls.id.value<1000000)){
+            console.log(this.roomEnterForm)
+
+        } else {
+            console.log("Tu madre")
+        }
 
         // this.router.navigate(['landing'])
     }
