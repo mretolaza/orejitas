@@ -16,6 +16,7 @@ import { HomeComponent } from './home.component';
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
+        NgbModule
     ],
     declarations: [ HomeComponent ],
     exports:[ HomeComponent ],

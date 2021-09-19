@@ -26,10 +26,10 @@
             <div class="col-lg-6 text-center">
               <div class="btn-wrapper mt-5 mb-5" *ngIf="buttons">
                 <button class="btn btn-lg btn-white btn-icon mb-3 mb-sm-0" (click)="goToForm(true)">
-                  Crear juego
+                  Crear una sala
                 </button>
                 <button class="btn btn-lg btn-github btn-icon mb-3 mb-sm-0" (click)="goToForm(false)">
-                  Ingresar
+                  Unirse a la sala
                 </button>
               </div>
 
@@ -44,18 +44,21 @@
                     </div>
                   </div>
                   <div class="card-body px-lg-5 py-lg-5">
+                    <ngb-alert type="danger"  [dismissible]="true" *ngIf="showed" (close)="close()">
+                      <span class="alert-inner--text">  <strong>Error! </strong>{{ errorMessage }}</span>
+                    </ngb-alert>
                     <form role="form" [formGroup]="roomCreateForm" (ngSubmit)="createRoom()">
                       <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
                         <div class="input-group input-group-alternative">
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-controller"></i></span>
                           </div>
-                          <input formControlName="name" class="form-control" placeholder="Nombre sala" type="text" (focus)="focus=true"
+                          <input formControlName="name" required class="form-control" placeholder="Nombre sala" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
                       <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
-                        <textarea formControlName="description" class="form-control form-control-alternative" id="roomdesc" rows="3" placeholder="Ingresa la descripción de la sala"></textarea>
+                        <textarea formControlName="description" required class="form-control form-control-alternative" id="roomdesc" rows="3" placeholder="Ingresa la descripción de la sala"></textarea>
                       </div> 
                       <h6 class="mb-2">Número de jugadores</h6>
                       <div class="row align-items-center justify-content-center">
@@ -84,12 +87,12 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
                           </div>
-                          <input formControlName="ownerNickName" class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
+                          <input formControlName="ownerNickName" required class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
                       <div class="text-center">
-                        <button type="submit" class="btn btn-primary my-4" (click)="createGame()">Crear</button>
+                        <button type="submit" class="btn btn-primary my-4">Crear</button>
                       </div>
                     </form>
                   </div>
@@ -106,13 +109,16 @@
                     </div>
                   </div>
                   <div class="card-body px-lg-5 py-lg-5">
-                    <form role="form" [formGroup]="roomEnterForm" (ngSubmit)="joinGame()">
+                    <ngb-alert type="danger"  [dismissible]="true" *ngIf="showed" (close)="close()">
+                      <span class="alert-inner--text">  <strong>Error! </strong>{{ errorMessage }}</span>
+                    </ngb-alert>
+                    <form role="form" [formGroup]="roomEnterForm" (ngSubmit)="enterRoom()">
                       <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
                         <div class="input-group input-group-alternative">
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-controller"></i></span>
                           </div>
-                          <input formControlName="id" class="form-control" minlength="6" placeholder="Id de la sala" type="text" (focus)="focus=true"
+                          <input formControlName="id" required class="form-control" minlength="6" placeholder="Id de la sala" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
@@ -121,7 +127,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
                           </div>
-                          <input formControlName="playerNickName" class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
+                          <input formControlName="playerNickName" required class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>

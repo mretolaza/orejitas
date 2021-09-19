@@ -17,17 +17,24 @@ export class HomeComponent implements OnInit {
     ) { 
 
       this.socketWebService.outCreateRoom.subscribe(res => {
-        console.log('escuchadno--->');
-        console.log('outCreateRoom--->', res);
+          if (!res.success) {
+              this.errorMessage = 'Error al crear la sala';
+              this.showed = true;
+          } else { 
+              this.router.navigate(['landing'])
+          }
       })
   
       this.socketWebService.outjoinRoom.subscribe(res => {
-        console.log('escuchadno--->');
-        console.log('outjoinRoom--->', res);
+          if (!res.success) {
+              this.errorMessage = 'Error al unirse a la sala';
+              this.showed = true;
+          } else { 
+              this.router.navigate(['landing'])
+          }
       })
     }
-
-    ngOnInit() { }
+    ngOnInit(): void {}
 
     model = {
         left: true,
@@ -41,7 +48,11 @@ export class HomeComponent implements OnInit {
 
     isEnter: boolean = true;
 
-    indexPlayer: number = 0;
+    showed: boolean = false;
+
+    indexPlayer: number = null;
+
+    errorMessage: string = '';
 
     roomCreateForm = new FormGroup({
         name: new FormControl(''),
@@ -93,57 +104,43 @@ export class HomeComponent implements OnInit {
     } 
 
     createRoom() {
-        console.log(this.roomCreateForm)
-
-        // this.router.navigate(['landing'])
+        if(this.roomCreateForm.valid && this.indexPlayer != null){
+            const roomInfo = {
+                type: 'createRoom',
+                data: {
+                    name: this.roomCreateForm.controls.name.value,
+                    description: this.roomCreateForm.controls.description.value,
+                    maxPlayers: this.roomCreateForm.controls.players.value,
+                    userNickname: this.roomCreateForm.controls.ownerNickName.value,
+                },
+            }
+            this.socketWebService.createRoom(roomInfo);
+        } else {
+            this.errorMessage = 'Por favor llene todos los campos';
+            this.showed = true;
+        }
     }
 
     enterRoom(){
-        if((this.roomEnterForm.controls.id.value>99999) && (this.roomEnterForm.controls.id.value<1000000)){
-            console.log(this.roomEnterForm)
+        if(this.roomEnterForm.valid){
+            const roomInfo = {
+                type: 'joinRoom',
+                data: {
+                  roomId: this.roomEnterForm.controls.id.value,
+                  nickname: this.roomEnterForm.controls.id.value,
+                },
+            };
+            this.socketWebService.joinRoom(roomInfo);
 
         } else {
-            console.log("Tu madre")
+            this.errorMessage = 'Por favor llene todos los campos';
+            this.showed = true;
         }
-
-        // this.router.navigate(['landing'])
     }
+
+    close = () => this.showed = false;
 
     focus;
     focus1;
-
-    createGame() {
-      console.log('holi')
-  
-      const createRoomSpark = {
-        type: 'createRoom',
-        data: {
-          name: 'Nueva Sala',
-          description: 'Sala para grupo 1',
-          maxPlayers: 4,
-          userNickname: 'Admin',
-        },
-      };
-  
-      // this.socketWebService.emitEvent(createRoomSpark)
-      this.socketWebService.createRoom(createRoomSpark);
-  
-    }
-  
-    joinGame() {
-  
-      const joinToRoomSpark = {
-        type: 'joinRoom',
-        data: {
-          roomId: this.roomEnterForm.controls.id.value,
-          nickname: 'AngularUsr',
-        },
-      };
-      
-      console.log('joinToRoomSpark------->', joinToRoomSpark)
-
-      this.socketWebService.joinRoom(joinToRoomSpark);
-  
-    }
     
 }
