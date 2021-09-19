@@ -17,72 +17,117 @@
       </div>
       <div class="container shape-container d-flex align-items-center">
         <div class="col px-0">
+         
           <div class="row align-items-center justify-content-center">
+            <h1 class="display-1 mb-0 text-white">Orejitas</h1>
+            <div class="col-sm-12">
+              
+            </div>
             <div class="col-lg-6 text-center">
-              <div class="btn-wrapper mt-5 mb-5">
-                <button class="btn btn-lg btn-white btn-icon mb-3 mb-sm-0" (click)="iniciar=true">
+              <div class="btn-wrapper mt-5 mb-5" *ngIf="buttons">
+                <button class="btn btn-lg btn-white btn-icon mb-3 mb-sm-0" (click)="goToForm(true)">
                   Crear juego
                 </button>
-                <button class="btn btn-lg btn-github btn-icon mb-3 mb-sm-0" (click)="iniciar=false">
+                <button class="btn btn-lg btn-github btn-icon mb-3 mb-sm-0" (click)="goToForm(false)">
                   Ingresar
                 </button>
               </div>
 
-              <div class="col-lg-12" *ngIf="iniciar">
+              <div class="col-lg-12" *ngIf="!buttons && isEnter">
                 <div class="card bg-secondary shadow border-0">
-                  <div class="card-header bg-white pb-5">
+                  <div class="card-header bg-white pb-2">
+                    <button class="btn btn-icon btn-3 btn-outline-primary rounded-pill" type="button" (click)="backreturn()">
+                      <span class="btn-inner--icon"><i class="ni ni-bold-left"></i></span>
+                    </button>
                     <div class="btn-wrapper text-center">
-                      <h1>Crear sala para jugar Orejitas</h1>  
+                      <h2 class="display-2 mb-0">Crear una sala</h2> 
                     </div>
                   </div>
                   <div class="card-body px-lg-5 py-lg-5">
-                    <form role="form">
-                      <div class="form-group mb-3" [ngClass]="{'focused':focus===true}">
+                    <form role="form" [formGroup]="roomCreateForm" (ngSubmit)="createRoom()">
+                      <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
                         <div class="input-group input-group-alternative">
                           <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                            <span class="input-group-text"><i class="ni ni-controller"></i></span>
                           </div>
-                          <input class="form-control" placeholder="Email" type="text" (focus)="focus=true"
+                          <input formControlName="name" class="form-control" placeholder="Nombre sala" type="text" (focus)="focus=true"
+                            (blur)="focus=false">
+                        </div>
+                      </div>
+                      <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
+                        <textarea formControlName="description" class="form-control form-control-alternative" id="roomdesc" rows="3" placeholder="Ingresa la descripción de la sala"></textarea>
+                      </div> 
+                      <h6 class="mb-2">Número de jugadores</h6>
+                      <div class="row align-items-center justify-content-center">
+                        <nav aria-label="jugadores">
+                          <ul class="pagination">
+                            <li class="page-item" (click)="setPreviousNum()">
+                              <a class="page-link" href="javascript:void(0)" tabindex="-1">
+                                <i class="fa fa-angle-left"></i>
+                                <span class="sr-only">Previous</span>
+                              </a>
+                            </li>
+                            <li [class]="classes[i]" *ngFor="let number of listnumberplayers; index as i" (click)="setActiveNum(i)">
+                              <a class="page-link" href="javascript:void(0)">{{number}} </a>
+                            </li>
+                            <li class="page-item" (click)="setNextNum()">
+                              <a class="page-link" href="javascript:void(0)">
+                                <i class="fa fa-angle-right"></i>
+                                <span class="sr-only">Next</span>
+                              </a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                      <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
+                        <div class="input-group input-group-alternative">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
+                          </div>
+                          <input formControlName="ownerNickName" class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
                       <div class="text-center">
-                        <button type="button" class="btn btn-primary my-4">Crear</button>
+                        <button type="submit" class="btn btn-primary my-4">Crear</button>
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-12" *ngIf="!iniciar">
+              <div class="col-lg-12" *ngIf="!buttons && !isEnter">
                 <div class="card bg-secondary shadow border-0">
-                  <div class="card-header bg-white pb-5">
+                  <div class="card-header bg-white pb-2">
+                    <button class="btn btn-icon btn-3 btn-outline-primary rounded-pill" type="button" (click)="backreturn()">
+                      <span class="btn-inner--icon"><i class="ni ni-bold-left"></i></span>
+                    </button>
                     <div class="btn-wrapper text-center">
-                      <h1>Ingresar sala para jugar Orejitas</h1>  
+                      <h2 class="display-2 mb-0">Ingresar a una sala</h2>  
                     </div>
                   </div>
                   <div class="card-body px-lg-5 py-lg-5">
-                    <form role="form">
-                      <div class="form-group mb-3" [ngClass]="{'focused':focus===true}">
+                    <form role="form" [formGroup]="roomEnterForm">
+                      <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
                         <div class="input-group input-group-alternative">
                           <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                            <span class="input-group-text"><i class="ni ni-controller"></i></span>
                           </div>
-                          <input class="form-control" placeholder="Email" type="text" (focus)="focus=true"
+                          <input [(ngModel)]="roomEnter.roomID" class="form-control" placeholder="Id de la sala" type="number" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
-                      <div class="form-group mb-3" [ngClass]="{'focused':focus===true}">
+                      <div class="form-group mb-3 border border-primary rounded" [ngClass]="{'focused':focus===true}">
                         <div class="input-group input-group-alternative">
                           <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                            <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
                           </div>
-                          <input class="form-control" placeholder="Email" type="text" (focus)="focus=true"
+                          <input [(ngModel)]="roomEnter.playerNickName" class="form-control" placeholder="Apodo" type="text" (focus)="focus=true"
                             (blur)="focus=false">
                         </div>
                       </div>
                       
                       <div class="text-center">
-                        <button type="button" class="btn btn-primary my-4">Crear</button>
+                        <button type="button" class="btn btn-primary my-4">Ingresar</button>
                       </div>
                     </form>
                   </div>
