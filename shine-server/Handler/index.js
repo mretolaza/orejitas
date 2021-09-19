@@ -36,7 +36,9 @@ module.exports = (event) => {
 
     // Add room to rooms list
     rooms.push(room);
-
+    
+    console.log(rooms);
+    
     const response = {
       sparkId,
       type: 'response',
