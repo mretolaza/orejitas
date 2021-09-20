@@ -47,9 +47,9 @@ io.on('connection', function (socket) {
 
     // Add room to rooms list
     rooms.push(room);
-
+    
     const roomToJoin = rooms.find((r) => r.id === room.id);
-    roomToJoin.join(res.data.nickname, handshake);
+    roomToJoin.join(res.data.userNickname, handshake);
 
     // Create players info
     const players = roomToJoin.players.map((player, index) => ({
@@ -159,7 +159,7 @@ io.on('connection', function (socket) {
     };
 
     let send = false;
-
+    
     if (roomToStart) {
       if (roomToStart.roomAdmin == res.data.nickname) {
         if (roomToStart.countPlayers == roomToStart.maxPlayers) {

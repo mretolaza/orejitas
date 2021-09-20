@@ -15,15 +15,6 @@ export class LandingComponent implements OnInit {
 
   message: string = '';
 
-  cartas: any[] = [
-    {
-      numero: 1,
-      figura: 0,
-      img: './assets/img/cards/0_1.svg'
-    }
-  ];
-
-
   c = [{
     numero: 2,
     figura: 0,
@@ -93,6 +84,8 @@ export class LandingComponent implements OnInit {
   isGameIniciated: boolean = false;
   messages = [];
   count: number = 0;
+  players; 
+  mycards;
 
   constructor(
     private socketWebService: SocketWebService, 
@@ -105,8 +98,13 @@ export class LandingComponent implements OnInit {
     })
 
     this.socketWebService.outjoinRoom.subscribe(res => {
-      console.log('escuchadno--->');
-      console.log('outjoinRoom--->', res);
+      if (res.success) {
+        const smsroom = {
+          message: res.data.message,
+          nickname: null,
+        }
+        this.messages.push(smsroom);
+      }
     })
 
     this.socketWebService.outChat.subscribe(res => {
@@ -121,8 +119,17 @@ export class LandingComponent implements OnInit {
     })
 
     this.socketWebService.outStartRoom.subscribe(res => {
-      console.log('escuchadno start--->');
-      console.log('outStartRoom--->', res);
+      if (res.success) {
+        this.players = res.data.players;
+        this.mycards = this.players.find((player) => player.name == this.nickname).cards;
+        
+        this.mycards.forEach( card => {
+          card.img = './assets/img/cards/' + card.img + '.svg'
+        });
+        
+      } else {
+        //TODO mostrar mensaje de error
+      }
     })
 
   }
@@ -145,7 +152,7 @@ export class LandingComponent implements OnInit {
 
     const card = this.c[0];
 
-    this.cartas.push(card)
+    this.mycards.push(card)
 
     this.c.shift();
     console.log(card)
@@ -157,7 +164,7 @@ export class LandingComponent implements OnInit {
       type: 'startRoom',
       data: {
         roomId: this.roomid,
-        nickname: 'Admin'
+        nickname: this.nickname
       },
     };
 
