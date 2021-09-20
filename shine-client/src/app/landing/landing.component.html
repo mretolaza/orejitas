@@ -14,7 +14,7 @@
         <span></span>
       </div>
       <div class="container py-lg-2 d-flex mx-auto">
-        <button type="button" class="btn btn-primary">Iniciar Juego</button>
+        <button type="button" class="btn btn-primary" (click)="start()">Iniciar Juego</button>
         <h1 class="display-2 text-white ml-5" >Orejitas sala: {{roomid}}</h1>
       </div>
       <div class="container py-lg-md d-flex mx-auto">
@@ -33,7 +33,7 @@
             </div>
             <div class="col-lg-3">
               <div class="col-lg-12 col-xs-12 mb-5">
-                <div class="card card-lift--hover shadow border-0">
+                <div class="card shadow border-0">
                   <div class="card-body">
                     <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
                     <img src="./assets/img/cards/0_1.svg" style="width: 150px;" class="img-fluid border">
@@ -55,11 +55,24 @@
               </div> -->
             </div>
             <div class="col-lg-6">
-              <div class="card card-lift--hover shadow border-0 mh-100 h-100">
+              <div class="card shadow border-0 mh-100 h-100">
                 <div class="card-body">
-                  <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
-                  <img src="./assets/img/cards/0_1.svg" style="width: 150px;" class="img-fluid border">
-                  <!-- <button href="javascript:void(0)" class="btn btn-success mt-4">Tirar</button>                   -->
+                  <div class="container px-0">
+                    <div class="row">
+                      hola
+                    </div>
+                    <div class="row">
+                      <div class="form-group" [ngClass]="{'focused':focus===true}">
+                        <div class="input-group mb-4">
+                          <input class="form-control" placeholder="Birthday" type="text" (focus)="focus5=true" (blur)="focus5=false">
+                          <div class="input-group-append">
+                            <span class="input-group-text"><i class="ni ni-zoom-split-in"></i></span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
