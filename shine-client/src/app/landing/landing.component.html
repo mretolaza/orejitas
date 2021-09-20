@@ -57,22 +57,17 @@
             <div class="col-lg-6">
               <div class="card shadow border-0 mh-100 h-100">
                 <div class="card-body">
-                  <div class="container px-0">
-                    <div class="row">
-                      hola
-                    </div>
-                    <div class="row">
-                      <div class="form-group" [ngClass]="{'focused':focus===true}">
-                        <div class="input-group mb-4">
-                          <input class="form-control" placeholder="Birthday" type="text" (focus)="focus5=true" (blur)="focus5=false">
-                          <div class="input-group-append">
-                            <span class="input-group-text"><i class="ni ni-zoom-split-in"></i></span>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
+                  <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
+                  <div >
+                    <ul class="list-unstyled" >
+                      <li class="py-2" *ngFor='let message of messages'>
+                        <div class="badge badge-circle badge-success mr-3"><i class="ni ni-notification-70"></i></div>
+                        {{message.nickname}} dice: {{message.message}}
+                      </li>
+                    </ul>
                   </div>
+
+                  <button href="javascript:void(0)" class="btn btn-success btn-icon-only rounded-circle" (click)="sendChat()"><i class="fa fa-send"></i></button>
                 </div>
               </div>
             </div>
