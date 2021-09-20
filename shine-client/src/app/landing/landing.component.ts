@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+import { SocketWebService } from '../service/socket-web.service';
 
 @Component({
   selector: 'app-landing',
@@ -80,10 +83,44 @@ export class LandingComponent implements OnInit {
     img: './assets/img/cards/1_1.svg'
   }];
 
+  
+  url = '';
+  roomid;
+  nickname;
 
-  constructor() { }
+  constructor(
+    private socketWebService: SocketWebService, 
+    private route: ActivatedRoute,
+  ) { 
+    this.socketWebService.outCreateRoom.subscribe(res => {
+      console.log('escuchadno--->');
+      console.log('outCreateRoom--->', res.data);
+      //this.sala = res.data.createdId;
+    })
 
-  ngOnInit() { }
+    this.socketWebService.outjoinRoom.subscribe(res => {
+      console.log('escuchadno--->');
+      console.log('outjoinRoom--->', res);
+    })
+
+    this.socketWebService.outChat.subscribe(res => {
+      console.log('escuchadno--->');
+      console.log('outChat--->', res);
+    })
+
+    this.socketWebService.outStartRoom.subscribe(res => {
+      console.log('escuchadno start--->');
+      console.log('outStartRoom--->', res);
+    })
+
+  }
+
+  ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      this.roomid = params.get('id');
+      this.nickname = params.get('nickname');
+    });
+  }
 
   addcard() {
 
@@ -98,4 +135,18 @@ export class LandingComponent implements OnInit {
     console.log(card)
   }
 
+  start() {
+     
+    const startr = {
+      type: 'startRoom',
+      data: {
+        roomId: this.roomid,
+        nickname: 'Admin'
+      },
+    };
+
+          
+    console.log('startr',startr)
+    this.socketWebService.startRoom(startr); 
+  }
 }

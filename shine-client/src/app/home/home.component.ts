@@ -21,7 +21,8 @@ export class HomeComponent implements OnInit {
               this.errorMessage = 'Error al crear la sala';
               this.showed = true;
           } else { 
-              this.router.navigate(['landing'])
+              console.log(res.data);
+              this.router.navigate([`landing/${res.data.createdId}/${this.nickname}`])
           }
       })
   
@@ -30,7 +31,8 @@ export class HomeComponent implements OnInit {
               this.errorMessage = 'Error al unirse a la sala';
               this.showed = true;
           } else { 
-              this.router.navigate(['landing'])
+            console.log(res.data)
+              this.router.navigate([`landing/${res.data.roomid}/${this.nickname}`])
           }
       })
     }
@@ -53,6 +55,8 @@ export class HomeComponent implements OnInit {
     indexPlayer: number = null;
 
     errorMessage: string = '';
+
+    nickname: string = '';
 
     roomCreateForm = new FormGroup({
         name: new FormControl(''),
@@ -105,6 +109,7 @@ export class HomeComponent implements OnInit {
 
     createRoom() {
         if(this.roomCreateForm.valid && this.indexPlayer != null){
+            this.nickname = this.roomCreateForm.controls.ownerNickName.value;
             const roomInfo = {
                 type: 'createRoom',
                 data: {
@@ -123,11 +128,12 @@ export class HomeComponent implements OnInit {
 
     enterRoom(){
         if(this.roomEnterForm.valid){
+            this.nickname = this.roomEnterForm.controls.playerNickName.value;
             const roomInfo = {
                 type: 'joinRoom',
                 data: {
                   roomId: this.roomEnterForm.controls.id.value,
-                  nickname: this.roomEnterForm.controls.id.value,
+                  nickname: this.roomEnterForm.controls.playerNickName.value,
                 },
             };
             this.socketWebService.joinRoom(roomInfo);
