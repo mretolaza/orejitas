@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
               this.showed = true;
           } else { 
               console.log(res.data);
-              this.router.navigate([`landing/${res.data.createdId}/${this.nickname}`])
+              this.router.navigate([`landing/${res.data.createdId}/${this.nickname}/${this.admin}`])
           }
       })
   
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
               this.showed = true;
           } else { 
             console.log(res.data)
-              this.router.navigate([`landing/${res.data.roomid}/${this.nickname}`])
+              this.router.navigate([`landing/${res.data.roomid}/${this.nickname}/${this.admin}`])
           }
       })
     }
@@ -57,6 +57,8 @@ export class HomeComponent implements OnInit {
     errorMessage: string = '';
 
     nickname: string = '';
+
+    admin: string = '';
 
     roomCreateForm = new FormGroup({
         name: new FormControl(''),
@@ -119,6 +121,7 @@ export class HomeComponent implements OnInit {
                     userNickname: this.roomCreateForm.controls.ownerNickName.value,
                 },
             }
+            this.admin = 'admin'
             this.socketWebService.createRoom(roomInfo);
         } else {
             this.errorMessage = 'Por favor llene todos los campos';
@@ -136,6 +139,7 @@ export class HomeComponent implements OnInit {
                   nickname: this.roomEnterForm.controls.playerNickName.value,
                 },
             };
+            this.admin = 'no-admin'
             this.socketWebService.joinRoom(roomInfo);
 
         } else {

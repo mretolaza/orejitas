@@ -13,6 +13,8 @@ export class LandingComponent implements OnInit {
   focus: any;
   focus1: any;
 
+  message: string = '';
+
   cartas: any[] = [
     {
       numero: 1,
@@ -85,9 +87,12 @@ export class LandingComponent implements OnInit {
 
   
   url = '';
-  roomid;
-  nickname;
+  roomid: string;
+  nickname: string;
+  isAdmin: boolean;
+  isGameIniciated: boolean = false;
   messages = [];
+  count: number = 0;
 
   constructor(
     private socketWebService: SocketWebService, 
@@ -105,8 +110,6 @@ export class LandingComponent implements OnInit {
     })
 
     this.socketWebService.outChat.subscribe(res => {
-      console.log('escuchadno--->');
-      console.log('outChat--->', res);
       if (res){
         const sms = {
           message: res.data.message,
@@ -128,6 +131,10 @@ export class LandingComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.roomid = params.get('id');
       this.nickname = params.get('nickname');
+      if (this.count == 0) {
+        this.isAdmin = params.get('admin') == 'admin';
+        this.count = 1;
+      }
     });
   }
 
@@ -154,21 +161,23 @@ export class LandingComponent implements OnInit {
       },
     };
 
-          
+    this.isGameIniciated = true;     
     console.log('startr',startr)
     this.socketWebService.startRoom(startr); 
   }
 
   sendChat() {
-    const message = {
-      type: 'chatRoom',
-      data: {
-        roomId: this.roomid,
-        nickname: this.nickname,
-        message: 'holi chat soy ' + this.nickname, //TODO cambiar para obtener el texto
-      },
-    };
-    
-    this.socketWebService.chatSend(message);
+    if (this.message != '') {
+      const message = {
+        type: 'chatRoom',
+        data: {
+          roomId: this.roomid,
+          nickname: this.nickname,
+          message: this.message
+        },
+      };
+      this.message = ''
+      this.socketWebService.chatSend(message); 
+    }
   }
 }

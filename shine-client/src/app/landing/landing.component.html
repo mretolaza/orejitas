@@ -14,7 +14,7 @@
         <span></span>
       </div>
       <div class="container py-lg-2 d-flex mx-auto">
-        <button type="button" class="btn btn-primary" (click)="start()">Iniciar Juego</button>
+        <button type="button" class="btn btn-primary" (click)="start()" *ngIf="isAdmin && !isGameIniciated">Iniciar Juego</button>
         <h1 class="display-2 text-white ml-5" >Orejitas sala: {{roomid}}</h1>
       </div>
       <div class="container py-lg-md d-flex mx-auto">
@@ -55,19 +55,25 @@
               </div> -->
             </div>
             <div class="col-lg-6">
-              <div class="card shadow border-0 mh-100 h-100">
+              <div class="card shadow border-0 chat-height">
                 <div class="card-body">
-                  <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
-                  <div >
-                    <ul class="list-unstyled" >
-                      <li class="py-2" *ngFor='let message of messages'>
-                        <div class="badge badge-circle badge-success mr-3"><i class="ni ni-notification-70"></i></div>
-                        {{message.nickname}} dice: {{message.message}}
-                      </li>
-                    </ul>
+                  <div class="container px-0 h-100 d-flex flex-column" >
+                    <div class="row flex-grow-1 mb-3 message-height">
+                      <ul class="list-unstyled" >
+                        <li class="py-2" *ngFor='let message of messages'>
+                          <div class="badge badge-circle badge-success mr-3"><i class="ni ni-notification-70"></i></div>
+                          {{message.nickname}} dice: {{message.message}}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="row h-auto">
+                      <div class="form-group d-flex col mb-0">
+                        <input type="text" [(ngModel)]="message" (keyup.enter)="sendChat()" placeholder="Ingresa tu mensaje" class="form-control flex-grow-1" />
+                        <button href="javascript:void(0)" class="btn btn-success btn-icon-only rounded-circle ml-2" (click)="sendChat()"><i class="fa fa-send"></i></button>
+                      </div>
+                    </div>
                   </div>
 
-                  <button href="javascript:void(0)" class="btn btn-success btn-icon-only rounded-circle" (click)="sendChat()"><i class="fa fa-send"></i></button>
                 </div>
               </div>
             </div>
