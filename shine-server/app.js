@@ -125,8 +125,8 @@ io.on('connection', function (socket) {
       }
     }
 
-    //socket.emit('joinRoom', response);
-    socket.in(res.data.roomId).emit('joinRoom', response);
+    socket.emit('joinRoom', response);
+    //socket.in(res.data.roomId).emit('joinRoom', response);
   });
 
   // chat para una sala
