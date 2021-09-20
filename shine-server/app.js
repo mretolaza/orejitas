@@ -65,7 +65,7 @@ io.on('connection', function (socket) {
       success: true,
       data: {
         createdId: room.id,
-        cards: room.roomDeck
+        cards: room.roomDeck,
       },
     };
 
@@ -106,27 +106,28 @@ io.on('connection', function (socket) {
           index,
           nickname: player.name,
         }));
-
+        
         // Add new response data
         response.success = true;
         response.data = {
-          room: {
-            name: roomToJoin.name,
-            description: roomToJoin.description,
-          },
+          roomid: roomToJoin.id,
+          name: roomToJoin.name,
+          description: roomToJoin.description,
           message: `${res.data.nickname} has joined to room`,
           players,
         };
 
         socket.join(res.data.roomId)
+
+        console.log(`${chalk.green(`Nuevo dispositivo: ${handshake}`)} entrado a la sala ${roomToJoin.id}`);
       } else {
         response.success = false;
         response.data.message = 'Room is already full';
       }
     }
 
-    socket.emit('joinRoom', response);
-    //socket.in(res.data.roomId).emit('joinRoom', response);
+    //socket.emit('joinRoom', response);
+    io.in(res.data.roomId).emit('joinRoom', response);
   });
 
   // chat para una sala
@@ -223,7 +224,7 @@ io.on('connection', function (socket) {
             }
             response.data = data;
             console.log('se va a enviar inicio a player---------->', player)
-            socket.to(player.socket).emit('startRoom', response);
+            io.to(player.socket).emit('startRoom', response);
           }
           send = true
         } else {
