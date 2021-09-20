@@ -87,6 +87,7 @@ export class LandingComponent implements OnInit {
   url = '';
   roomid;
   nickname;
+  messages = [];
 
   constructor(
     private socketWebService: SocketWebService, 
@@ -106,6 +107,14 @@ export class LandingComponent implements OnInit {
     this.socketWebService.outChat.subscribe(res => {
       console.log('escuchadno--->');
       console.log('outChat--->', res);
+      if (res){
+        const sms = {
+          message: res.data.message,
+          nickname: res.data.nickname,
+        }
+        this.messages.push(sms);
+      }
+      
     })
 
     this.socketWebService.outStartRoom.subscribe(res => {
@@ -148,5 +157,18 @@ export class LandingComponent implements OnInit {
           
     console.log('startr',startr)
     this.socketWebService.startRoom(startr); 
+  }
+
+  sendChat() {
+    const message = {
+      type: 'chatRoom',
+      data: {
+        roomId: this.roomid,
+        nickname: this.nickname,
+        message: 'holi chat soy ' + this.nickname, //TODO cambiar para obtener el texto
+      },
+    };
+    
+    this.socketWebService.chatSend(message);
   }
 }

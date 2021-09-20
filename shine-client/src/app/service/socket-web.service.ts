@@ -25,6 +25,8 @@ export class SocketWebService extends Socket {
     //this.listen();
     this.listenCreateRoom();
     this.listenJoinRoom();
+    this.listenChat();
+    this.listenStartRoom();
   }
 
   listen = () => {
@@ -57,11 +59,12 @@ export class SocketWebService extends Socket {
   }
 
   chatSend = (data = {}) => {
-    this.ioSocket.emit('chat', data);   
+    this.ioSocket.emit('chatRoom', data);   
   }
 
   listenChat = () => {
-    this.ioSocket.on('chat', res => {
+    this.ioSocket.on('chatRoom', res => {
+      console.log('res', res)
       this.outChat.emit(res)
     });   
   }

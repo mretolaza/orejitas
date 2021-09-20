@@ -55,11 +55,19 @@
               </div> -->
             </div>
             <div class="col-lg-6">
-              <div class="card card-lift--hover shadow border-0 mh-100 h-100">
+              <div class="card shadow border-0 mh-100 h-100">
                 <div class="card-body">
                   <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
-                  <img src="./assets/img/cards/0_1.svg" style="width: 150px;" class="img-fluid border">
-                  <!-- <button href="javascript:void(0)" class="btn btn-success mt-4">Tirar</button>                   -->
+                  <div >
+                    <ul class="list-unstyled" >
+                      <li class="py-2" *ngFor='let message of messages'>
+                        <div class="badge badge-circle badge-success mr-3"><i class="ni ni-notification-70"></i></div>
+                        {{message.nickname}} dice: {{message.message}}
+                      </li>
+                    </ul>
+                  </div>
+
+                  <button href="javascript:void(0)" class="btn btn-success btn-icon-only rounded-circle" (click)="sendChat()"><i class="fa fa-send"></i></button>
                 </div>
               </div>
             </div>

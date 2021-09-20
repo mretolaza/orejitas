@@ -131,8 +131,7 @@ io.on('connection', function (socket) {
   });
 
   // chat para una sala
-  socket.on('chat', (res) => {
-
+  socket.on('chatRoom', (res) => {
     const response = {
       sparkId: 3,
       type: 'response',
@@ -140,7 +139,7 @@ io.on('connection', function (socket) {
       data: res.data,
     };
 
-    socket.to(res.data.roomId).emit('chat', response);
+    io.in(res.data.roomId).emit('chatRoom', response);
   });
 
   // start game
