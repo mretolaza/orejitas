@@ -40,10 +40,10 @@ module.exports = class Room {
     return this.admin;
   }
 
-  get firstPlayer() {
+  get turnPlayer() {
     const fp = this.players.sort(()=> Math.random() - 0.5)[0];
     const i = this.players.indexOf(fp);
     this.players[i].setTurn();
-    return this.players[i].name;
+    return this.players[i];
   }
 };

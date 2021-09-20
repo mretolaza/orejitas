@@ -43,12 +43,21 @@ io.on('connection', function (socket) {
     );
 
     // Join admin to Room
-    room.join(res.data.userNickname, room.id);
+    // room.join(res.data.userNickname, handshake);
 
     // Add room to rooms list
     rooms.push(room);
 
-    console.log(rooms);
+    const roomToJoin = rooms.find((r) => r.id === room.id);
+    roomToJoin.join(res.data.nickname, handshake);
+
+    // Create players info
+    const players = roomToJoin.players.map((player, index) => ({
+      index,
+      nickname: player.name,
+    }));
+
+    //console.log(rooms);
 
     const response = {
       sparkId: 1,
@@ -65,6 +74,7 @@ io.on('connection', function (socket) {
     console.log(`${chalk.green(`Nuevo dispositivo: ${handshake}`)} entrado a la sala ${room.id}`);
 
     socket.emit('createRoom', response);
+    //socket.in(room.id).emit('createRoom', response);
   })
 
 
@@ -89,7 +99,7 @@ io.on('connection', function (socket) {
     if (roomToJoin) {
       if (roomToJoin.countPlayers < roomToJoin.maxPlayers) {
         // Join to room
-        roomToJoin.join(res.data.nickname, socket);
+        roomToJoin.join(res.data.nickname, handshake);
 
         // Create players info
         const players = roomToJoin.players.map((player, index) => ({
@@ -104,20 +114,9 @@ io.on('connection', function (socket) {
             name: roomToJoin.name,
             description: roomToJoin.description,
           },
+          message: `${res.data.nickname} has joined to room`,
           players,
         };
-
-        // Broadcast to all room members
-        utils.broadcast(socket, {
-          type: 'join',
-          data: {
-            message: `${res.data.nickname} has joined to room`,
-            players,
-          },
-        }, roomToJoin.players);
-
-        // Add roomId to socket
-        //socket.joinedRoom = roomToJoin.id;
 
         socket.join(res.data.roomId)
       } else {
@@ -126,7 +125,8 @@ io.on('connection', function (socket) {
       }
     }
 
-    socket.emit('joinRoom', response);
+    //socket.emit('joinRoom', response);
+    socket.in(res.data.roomId).emit('joinRoom', response);
   });
 
   // chat para una sala
@@ -143,11 +143,11 @@ io.on('connection', function (socket) {
   });
 
   // start game
-  socket.on('startRoom', (res) => {
+  socket.on('startRoom', async (res) => {
 
     // room to start game
     const roomToStart = rooms.find((room) => room.id === res.data.roomId);
-    console.log('into start', roomToStart)
+
     // Default response
     const response = {
       sparkId: 4,
@@ -158,16 +158,74 @@ io.on('connection', function (socket) {
       },
     };
 
+    let send = false;
+
     if (roomToStart) {
       if (roomToStart.roomAdmin == res.data.nickname) {
         if (roomToStart.countPlayers == roomToStart.maxPlayers) {
           roomToStart.start = true
 
-          response.success = true;
-          response.data = {
-            start: roomToStart.start,
-            firstPlayer: roomToStart.firstPlayer
+          const playersList = roomToStart.players
+          const deckRoom = roomToStart.roomDeck
+
+          for (const player in playersList) {
+            let hand = [];
+            for (var i = 0; i < 5; i++) {
+              const card = deckRoom[i];
+              hand.push(card);
+              deckRoom.splice(deckRoom.indexOf(card), 1)
+            }
+            playersList[player].cards = hand;
           }
+
+          roomToStart.roomDeck = deckRoom;
+          response.success = true;
+
+          const data = {
+            start: roomToStart.start,
+            turnPlayer: roomToStart.turnPlayer,
+            players: roomToStart.players,
+            roomdeck: roomToStart.roomDeck,
+          }
+
+          response.data = data;
+
+          for (const player of playersList) {
+            let playersret = []
+            for (const newPlayer of playersList) {
+              if (player.socket == newPlayer.socket) {
+                const pl = {
+                  name: player.name,
+                  socket: player.socket,
+                  room: player.room,
+                  cards: player.cards,
+                  countCards: player.cards.length,
+                  turn: player.turn
+                }
+                playersret.push(pl);
+              } else {
+                const pl = {
+                  name: newPlayer.name,
+                  socket: newPlayer.socket,
+                  room: newPlayer.room,
+                  cards: null,
+                  countCards: newPlayer.cards.length,
+                  turn: newPlayer.turn
+                }
+                playersret.push(pl);
+              }
+            }
+            const data = {
+              start: roomToStart.start,
+              turnPlayer: roomToStart.turnPlayer,
+              players: playersret,
+              roomdeck: roomToStart.roomDeck,
+            }
+            response.data = data;
+            console.log('se va a enviar inicio a player---------->', player)
+            socket.to(player.socket).emit('startRoom', response);
+          }
+          send = true
         } else {
           response.success = false;
           response.data = {
@@ -182,7 +240,10 @@ io.on('connection', function (socket) {
       }
     }
 
-    socket.emit('startRoom', response);
+    if (!send) {
+      socket.emit('startRoom', response);
+    }
+    
   });
 
   // handler  
