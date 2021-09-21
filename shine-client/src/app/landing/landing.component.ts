@@ -14,69 +14,6 @@ export class LandingComponent implements OnInit {
   focus1: any;
 
   message: string = '';
-
-  c = [{
-    numero: 2,
-    figura: 0,
-    img: './assets/img/cards/0_2.svg'
-  },
-  {
-    numero: 2,
-    figura: 1,
-    img: './assets/img/cards/1_2.svg'
-  },
-  {
-    numero: 2,
-    figura: 3,
-    img: './assets/img/cards/3_2.svg'
-  },
-  {
-    numero: 1,
-    figura: 2,
-    img: './assets/img/cards/2_1.svg'
-  },
-  {
-    numero: 1,
-    figura: 3,
-    img: './assets/img/cards/3_1.svg'
-  },
-  {
-    numero: 1,
-    figura: 1,
-    img: './assets/img/cards/1_1.svg'
-  },
-  {
-    numero: 2,
-    figura: 0,
-    img: './assets/img/cards/0_2.svg'
-  },
-  {
-    numero: 2,
-    figura: 1,
-    img: './assets/img/cards/1_2.svg'
-  },
-  {
-    numero: 2,
-    figura: 3,
-    img: './assets/img/cards/3_2.svg'
-  },
-  {
-    numero: 1,
-    figura: 2,
-    img: './assets/img/cards/2_1.svg'
-  },
-  {
-    numero: 1,
-    figura: 3,
-    img: './assets/img/cards/3_1.svg'
-  },
-  {
-    numero: 1,
-    figura: 1,
-    img: './assets/img/cards/1_1.svg'
-  }];
-
-  
   url = '';
   roomid: string;
   nickname: string;
