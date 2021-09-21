@@ -222,7 +222,7 @@ io.on('connection', function (socket) {
               roomdeck: roomToStart.roomDeck,
             }
             response.data = data;
-            console.log('se va a enviar inicio a player---------->', player)
+            // console.log('se va a enviar inicio a player---------->', player)
             io.to(player.socket).emit('startRoom', response);
           }
           send = true
@@ -245,6 +245,89 @@ io.on('connection', function (socket) {
     }
     
   });
+
+  // Take a card
+  socket.on('takeCard', async (res) => {
+
+    // Default response
+    const response = {
+      sparkId: 5,
+      type: 'response',
+      success: false,
+      data: {
+        message: 'Room does not exists',
+      },
+    };
+
+    send = false
+    // room to start game
+    const roomGame = rooms.find((room) => room.id === res.data.roomId);
+    
+    if (roomGame){
+      const deck = roomGame.roomDeck;
+      const playersList = roomGame.players;
+
+      if (deck.length > 0) {
+        const newCard = deck[0];
+        
+        for (const player in playersList) {
+          if (playersList[player].name == res.data.nickname){
+            playersList[player].cards.push(newCard);
+            deck.splice(deck.indexOf(newCard), 1);
+          }
+        }
+
+        for await (const player of playersList) {
+          let playersret = []
+          for (const newPlayer of playersList) {
+            if (player.socket == newPlayer.socket) {
+              const pl = {
+                name: player.name,
+                socket: player.socket,
+                room: player.room,
+                cards: player.cards,
+                countCards: player.cards.length,
+                turn: player.turn
+              }
+              playersret.push(pl);
+            } else {
+              const pl = {
+                name: newPlayer.name,
+                socket: newPlayer.socket,
+                room: newPlayer.room,
+                cards: null,
+                countCards: newPlayer.cards.length,
+                turn: newPlayer.turn
+              }
+              playersret.push(pl);
+            }
+          }
+          const data = {
+            start: roomGame.start,
+            turnPlayer: roomGame.turnPlayer,
+            players: playersret,
+            roomdeck: roomGame.roomDeck,
+          }
+          response.success = true;
+          response.data = data;
+          console.log('se va a enviar inicio a player---------->', player)
+          io.to(player.socket).emit('takeCard', response);
+        }
+        send = true
+        
+      } else {
+        // Default response
+        response.success= false;
+        response.data = {
+            message: 'Empty deck',
+          };
+      }
+    }
+    
+    if (!send) {
+      socket.emit('takeCard', response);
+    }    
+  })
 
   // handler  
   socket.on('evento', (res) => {

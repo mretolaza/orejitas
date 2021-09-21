@@ -132,6 +132,23 @@ export class LandingComponent implements OnInit {
       }
     })
 
+
+    this.socketWebService.outTakeCard.subscribe(res => {
+      console.log(res);
+      if (res.success) {
+        this.players = res.data.players;
+        this.mycards = this.players.find((player) => player.name == this.nickname).cards;
+        console.log('this.players---->', this.players)
+        console.log('this.mycards---->', this.mycards)
+        this.mycards.forEach( card => {
+          card.img = './assets/img/cards/' + card.img + '.svg'
+        });
+        
+      } else {
+        //TODO mostrar mensaje de error
+      }
+    })
+
   }
 
   ngOnInit() {
@@ -147,15 +164,16 @@ export class LandingComponent implements OnInit {
 
   addcard() {
 
-    if (this.c.length == 0)
-      return;
+    const addc = {
+      type: 'takeCard',
+      data: {
+        roomId: this.roomid,
+        nickname: this.nickname
+      },
+    };
 
-    const card = this.c[0];
-
-    this.mycards.push(card)
-
-    this.c.shift();
-    console.log(card)
+    console.log('addc',addc)
+    this.socketWebService.takeCard(addc); 
   }
 
   start() {
