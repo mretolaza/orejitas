@@ -168,6 +168,8 @@ io.on('connection', function (socket) {
           const playersList = roomToStart.players
           const deckRoom = roomToStart.roomDeck
 
+          const playerTurn = roomToStart.turnPlayer;
+
           for (const player in playersList) {
             let hand = [];
             for (var i = 0; i < 5; i++) {
@@ -181,14 +183,13 @@ io.on('connection', function (socket) {
           roomToStart.roomDeck = deckRoom;
           response.success = true;
 
-          const data = {
-            start: roomToStart.start,
-            turnPlayer: roomToStart.turnPlayer,
-            players: roomToStart.players,
-            roomdeck: roomToStart.roomDeck,
-          }
-
-          response.data = data;
+          // const data = {
+          //   start: roomToStart.start,
+          //   turnPlayer: roomToStart.turnPlayer,
+          //   players: roomToStart.players,
+          //   roomdeck: roomToStart.roomDeck,
+          // }
+          // response.data = data;
 
           for await (const player of playersList) {
             let playersret = []
@@ -217,7 +218,7 @@ io.on('connection', function (socket) {
             }
             const data = {
               start: roomToStart.start,
-              turnPlayer: roomToStart.turnPlayer,
+              turnPlayer: {socket: playerTurn.socket, name: playerTurn.name},
               players: playersret,
               roomdeck: roomToStart.roomDeck.length,
             }
@@ -304,7 +305,7 @@ io.on('connection', function (socket) {
           }
           const data = {
             start: roomGame.start,
-            turnPlayer: roomGame.turnPlayer,
+            //turnPlayer: playerTurn,
             players: playersret,
             roomdeck: roomGame.roomDeck.length,
           }

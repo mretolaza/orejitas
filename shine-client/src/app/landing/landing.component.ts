@@ -129,6 +129,17 @@ export class LandingComponent implements OnInit {
         this.mycards.forEach( card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
+
+        this.turn = this.players.find((player) => player.turn == true)
+        
+        const sms = {
+          message: 'Play now!!! Turn of ' + this.turn.name,
+          nickname: null,
+        }
+        this.messages.push(sms);
+
+        console.log('this.players---->', this.players)
+        console.log('this.mycards---->', this.mycards)
         
       } else {
         this.errorMessage = 'Error al tratar de iniciar el juego';
@@ -145,6 +156,9 @@ export class LandingComponent implements OnInit {
         this.mycards.forEach( card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
+
+        console.log('this.players---->', this.players)
+        console.log('this.mycards---->', this.mycards)
         
       } else {
         this.errorMessage = 'Error al sacar una carta del mazo';
