@@ -26,6 +26,12 @@ export class LandingComponent implements OnInit {
   players; 
   mycards;
   turn;
+  select:boolean = true;
+    
+  selectedCard;
+  selectedChangeCard;
+  imgSelected;
+  imgSelectedChange;
 
   constructor(
     private socketWebService: SocketWebService, 
@@ -158,6 +164,34 @@ export class LandingComponent implements OnInit {
       this.message = ''
       this.socketWebService.chatSend(message); 
     }
+  }
+
+  makeMove() {
+    
+  }
+
+  selectCard(carta:any, img) {
+    this.select = false
+
+    // TODO validar que la carta sea mayor a la carta sobre la mesa
+
+    this.imgSelected = img;
+    this.selectedCard = carta;
+    console.log('mover carta', this.selectedCard);
+  }
+
+  changeCard(carta:any, img) {
+    this.select = true
+
+    // TODO validar que la carta sea mayor y de color diferente a la carta sobre la mesa
+
+    this.imgSelectedChange = img;
+    this.selectedChangeCard = carta;
+    console.log('mover carta', this.selectedChangeCard);
+  }
+
+  removeImgSelectedChange() {
+    //this.selectedChangeCard = null;
   }
 
   close = () => this.showed = false;
