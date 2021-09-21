@@ -24,14 +24,17 @@ export class LandingComponent implements OnInit {
   messages = [];
   count: number = 0;
   players; 
+  otherPlayers;
   mycards;
   turn;
-  select:boolean = true;
+  tableCard;
+  select:boolean = false;
+  change:boolean = false;
     
   selectedCard;
   selectedChangeCard;
-  imgSelected;
-  imgSelectedChange;
+  imgSelected = './assets/img/cards/rev.svg';
+  imgSelectedChange = './assets/img/cards/rev.svg';
 
   constructor(
     private socketWebService: SocketWebService, 
@@ -67,6 +70,7 @@ export class LandingComponent implements OnInit {
     this.socketWebService.outStartRoom.subscribe(res => {
       if (res.success) {
         this.players = res.data.players;
+        this.otherPlayers = res.data.players.filter( p => p.name != this.nickname)
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
         
         this.mycards.forEach( card => {
@@ -95,6 +99,7 @@ export class LandingComponent implements OnInit {
       console.log(res);
       if (res.success) {
         this.players = res.data.players;
+        this.otherPlayers = res.data.players.filter( p => p.name != this.nickname)
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
         this.mycards.forEach( card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
@@ -102,6 +107,29 @@ export class LandingComponent implements OnInit {
 
         console.log('this.players---->', this.players)
         console.log('this.mycards---->', this.mycards)
+        
+      } /*else {
+        this.errorMessage = 'Error al sacar una carta del mazo';
+        this.showed = true;
+      }*/
+    })
+
+    this.socketWebService.outMakeMove.subscribe(res => {
+      console.log(res);
+      if (res.success) {
+        this.players = res.data.players;
+        this.otherPlayers = res.data.players.filter( p => p.name != this.nickname)
+        this.mycards = this.players.find((player) => player.name == this.nickname).cards;
+        
+        this.mycards.forEach( card => {
+          card.img = './assets/img/cards/' + card.img + '.svg'
+        });
+
+        this.tableCard = res.data.tablecard
+        
+        console.log('this.tableCard---->',this.tableCard)
+        console.log('this.players---->', this.players)
+        console.log('this.mycards---->', this.mycards)  
         
       } /*else {
         this.errorMessage = 'Error al sacar una carta del mazo';
@@ -167,11 +195,36 @@ export class LandingComponent implements OnInit {
   }
 
   makeMove() {
+
+    if (this.select) {
+      const  move = {
+        type:'makeMove',
+        data:{
+          roomId: this.roomid,
+          nickname: this.nickname,
+          card: {
+            num: this.selectedCard.num, 
+            fig: this.selectedCard.fig,
+            img: this.selectedCard.fig + '_' + this.selectedCard.num
+          },
+          change: this.change,
+          change_card: {
+            num: this.change ? this.selectedChangeCard.num : null, 
+            fig: this.change ? this.selectedChangeCard.fig : null,
+            img: this.change ? this.selectedChangeCard.fig + '_' + this.selectedChangeCard.num : null
+          }
+        }
+      }
+
+      console.log('move', move);
+      this.socketWebService.makeMove(move); 
+      this.removeImgSelectedChange();
+    }
     
   }
 
   selectCard(carta:any, img) {
-    this.select = false
+    this.select = true
 
     // TODO validar que la carta sea mayor a la carta sobre la mesa
 
@@ -181,9 +234,9 @@ export class LandingComponent implements OnInit {
   }
 
   changeCard(carta:any, img) {
-    this.select = true
+    this.change = true
 
-    // TODO validar que la carta sea mayor y de color diferente a la carta sobre la mesa
+    // TODO validar que la carta sea de color diferente a la carta sobre la mesa
 
     this.imgSelectedChange = img;
     this.selectedChangeCard = carta;
@@ -191,7 +244,11 @@ export class LandingComponent implements OnInit {
   }
 
   removeImgSelectedChange() {
-    //this.selectedChangeCard = null;
+    this.select = false;
+    this.change = false;
+    this.imgSelected = './assets/img/cards/rev.svg';
+    this.imgSelectedChange = './assets/img/cards/rev.svg';
+    
   }
 
   close = () => this.showed = false;

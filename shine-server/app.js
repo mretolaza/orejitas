@@ -47,7 +47,7 @@ io.on('connection', function (socket) {
 
     // Add room to rooms list
     rooms.push(room);
-    
+
     const roomToJoin = rooms.find((r) => r.id === room.id);
     roomToJoin.join(res.data.userNickname, handshake);
 
@@ -65,7 +65,8 @@ io.on('connection', function (socket) {
       success: true,
       data: {
         createdId: room.id,
-        cards: room.roomDeck,
+        roomdeck: room.roomDeck.length,
+        tablecard: null
       },
     };
 
@@ -106,7 +107,7 @@ io.on('connection', function (socket) {
           index,
           nickname: player.name,
         }));
-        
+
         // Add new response data
         response.success = true;
         response.data = {
@@ -159,11 +160,12 @@ io.on('connection', function (socket) {
     };
 
     let send = false;
-    
+
     if (roomToStart) {
       if (roomToStart.roomAdmin == res.data.nickname) {
         if (roomToStart.countPlayers == roomToStart.maxPlayers) {
           roomToStart.start = true
+          roomToStart.table_card = null
 
           const playersList = roomToStart.players
           const deckRoom = roomToStart.roomDeck
@@ -218,9 +220,10 @@ io.on('connection', function (socket) {
             }
             const data = {
               start: roomToStart.start,
-              turnPlayer: {socket: playerTurn.socket, name: playerTurn.name},
+              turnPlayer: { socket: playerTurn.socket, name: playerTurn.name },
               players: playersret,
               roomdeck: roomToStart.roomDeck.length,
+              tablecard: roomToStart.table_card,
             }
             response.data = data;
             // console.log('se va a enviar inicio a player---------->', player)
@@ -244,7 +247,7 @@ io.on('connection', function (socket) {
     if (!send) {
       socket.emit('startRoom', response);
     }
-    
+
   });
 
   // Take a card
@@ -263,16 +266,16 @@ io.on('connection', function (socket) {
     send = false
     // room to start game
     const roomGame = rooms.find((room) => room.id === res.data.roomId);
-    
-    if (roomGame){
+
+    if (roomGame) {
       const deck = roomGame.roomDeck;
       const playersList = roomGame.players;
 
       if (deck.length > 0) {
         const newCard = deck[0];
-        
+
         for (const player in playersList) {
-          if (playersList[player].name == res.data.nickname){
+          if (playersList[player].name == res.data.nickname) {
             playersList[player].cards.push(newCard);
             deck.splice(deck.indexOf(newCard), 1);
           }
@@ -308,6 +311,7 @@ io.on('connection', function (socket) {
             //turnPlayer: playerTurn,
             players: playersret,
             roomdeck: roomGame.roomDeck.length,
+            tablecard: roomGame.table_card
           }
           response.success = true;
           response.data = data;
@@ -315,19 +319,116 @@ io.on('connection', function (socket) {
           io.to(player.socket).emit('takeCard', response);
         }
         send = true
-        
+
       } else {
         // Default response
-        response.success= false;
+        response.success = false;
         response.data = {
-            message: 'Empty deck',
-          };
+          message: 'Empty deck',
+        };
       }
     }
-    
+
     if (!send) {
       socket.emit('takeCard', response);
-    }    
+    }
+  })
+
+
+  // make a move of cards  
+  socket.on('makeMove', async (res) => {
+    // Default response
+    const response = {
+      sparkId: 6,
+      type: 'response',
+      success: false,
+      data: {
+        message: 'Room does not exists',
+      },
+    };
+
+    send = false
+    // room to start game
+    const roomGame = rooms.find((room) => room.id === res.data.roomId);
+
+    if (roomGame) {
+      const playersList = roomGame.players;
+      
+
+      if (roomGame.table_card) {
+        // next move and change color
+        const playerMove = roomGame.players.find( (player) => player.name == res.data.nickname);
+        const playerCards = playerMove.cards;
+
+        const rmcard = playerCards.find((c) => c.num == res.data.card.num && c.fig == res.data.card.fig);
+        console.log('quitar', rmcard);
+        console.log('quitar', res.data.card);
+        playerCards.splice(playerCards.indexOf(rmcard), 1);
+        roomGame.table_card = res.data.card
+
+        if (res.data.change) {
+          const rmcardcolor = playerCards.find((c) => c.num == res.data.change_card.num && c.fig == res.data.change_card.fig);
+          playerCards.splice(playerCards.indexOf(rmcardcolor), 1);
+          roomGame.table_card = res.data.change_card
+        }
+
+      } else {
+
+        //first move
+        const playerMove = roomGame.players.find( (player) => player.name == res.data.nickname)
+        const playerCards = playerMove.cards
+
+        const rmcard = playerCards.find((c) => c.num == res.data.card.num && c.fig == res.data.card.fig);
+        console.log('quitar', rmcard);
+        console.log('quitar', res.data.card);
+        playerCards.splice(playerCards.indexOf(rmcard), 1);
+        roomGame.table_card = res.data.card
+
+      }
+
+      for await (const player of playersList) {
+        let playersret = []
+        for (const newPlayer of playersList) {
+          if (player.socket == newPlayer.socket) {
+            const pl = {
+              name: player.name,
+              socket: player.socket,
+              room: player.room,
+              cards: player.cards,
+              countCards: player.cards.length,
+              turn: player.turn
+            }
+            playersret.push(pl);
+          } else {
+            const pl = {
+              name: newPlayer.name,
+              socket: newPlayer.socket,
+              room: newPlayer.room,
+              cards: null,
+              countCards: newPlayer.cards.length,
+              turn: newPlayer.turn
+            }
+            playersret.push(pl);
+          }
+        }
+        const data = {
+          start: roomGame.start,
+          players: playersret,
+          roomdeck: roomGame.roomDeck.length,
+          tablecard: roomGame.table_card
+        }
+        response.success = true;
+        response.data = data;
+        // console.log('se va a enviar inicio a player---------->', player)
+        io.to(player.socket).emit('makeMove', response);
+      }
+      send = true
+    }
+
+    // Emite el mensaje a todos lo miembros de las sala menos a la persona que envia el mensaje  
+    if (!send) {
+      socket.emit('makeMove', response);
+    }
   })
 
   // handler  
