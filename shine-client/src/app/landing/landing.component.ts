@@ -81,6 +81,8 @@ export class LandingComponent implements OnInit {
   roomid: string;
   nickname: string;
   isAdmin: boolean;
+  showed: boolean = false;
+  errorMessage: string = '';
   isGameIniciated: boolean = false;
   messages = [];
   count: number = 0;
@@ -129,7 +131,8 @@ export class LandingComponent implements OnInit {
         });
         
       } else {
-        //TODO mostrar mensaje de error
+        this.errorMessage = 'Error al tratar de iniciar el juego';
+        this.showed = true;
       }
     })
 
@@ -144,7 +147,8 @@ export class LandingComponent implements OnInit {
         });
         
       } else {
-        //TODO mostrar mensaje de error
+        this.errorMessage = 'Error al sacar una carta del mazo';
+        this.showed = true;
       }
     })
 
@@ -204,4 +208,6 @@ export class LandingComponent implements OnInit {
       this.socketWebService.chatSend(message); 
     }
   }
+
+  close = () => this.showed = false;
 }
