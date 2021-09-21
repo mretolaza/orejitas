@@ -61,7 +61,7 @@
                     <div class="row flex-grow-1 mb-3 message-height">
                       <ul class="list-unstyled" >
                         <li class="py-2" *ngFor='let message of messages'>
-                          <div class="badge badge-circle badge-success mr-3"><i class="ni ni-notification-70"></i></div>
+                          <div class="badge badge-circle mr-3" [ngClass]="message.nickname ? 'badge-success':'badge-warning'"><i class="ni ni-notification-70"></i></div>
                           {{(message.nickname) ? message.nickname + ' dice: ' : ''}}{{message.message}}
                         </li>
                       </ul>

@@ -190,7 +190,7 @@ io.on('connection', function (socket) {
 
           response.data = data;
 
-          for (const player of playersList) {
+          for await (const player of playersList) {
             let playersret = []
             for (const newPlayer of playersList) {
               if (player.socket == newPlayer.socket) {
@@ -219,7 +219,7 @@ io.on('connection', function (socket) {
               start: roomToStart.start,
               turnPlayer: roomToStart.turnPlayer,
               players: playersret,
-              roomdeck: roomToStart.roomDeck,
+              roomdeck: roomToStart.roomDeck.length,
             }
             response.data = data;
             // console.log('se va a enviar inicio a player---------->', player)
@@ -306,11 +306,11 @@ io.on('connection', function (socket) {
             start: roomGame.start,
             turnPlayer: roomGame.turnPlayer,
             players: playersret,
-            roomdeck: roomGame.roomDeck,
+            roomdeck: roomGame.roomDeck.length,
           }
           response.success = true;
           response.data = data;
-          console.log('se va a enviar inicio a player---------->', player)
+          //console.log('se va a enviar inicio a player---------->', player)
           io.to(player.socket).emit('takeCard', response);
         }
         send = true

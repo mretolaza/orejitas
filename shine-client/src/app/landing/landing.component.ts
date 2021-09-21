@@ -86,6 +86,7 @@ export class LandingComponent implements OnInit {
   count: number = 0;
   players; 
   mycards;
+  turn;
 
   constructor(
     private socketWebService: SocketWebService, 
@@ -138,8 +139,6 @@ export class LandingComponent implements OnInit {
       if (res.success) {
         this.players = res.data.players;
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
-        console.log('this.players---->', this.players)
-        console.log('this.mycards---->', this.mycards)
         this.mycards.forEach( card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
