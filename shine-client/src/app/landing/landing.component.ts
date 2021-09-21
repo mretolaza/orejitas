@@ -127,6 +127,13 @@ export class LandingComponent implements OnInit {
 
         this.tableCard = res.data.tablecard
         
+        this.turn = this.players.find((player) => player.turn == true)
+        const sms = {
+          message: 'Turn of ' + this.turn.name,
+          nickname: null,
+        }
+        this.messages.push(sms);
+        
         console.log('this.tableCard---->',this.tableCard)
         console.log('this.players---->', this.players)
         console.log('this.mycards---->', this.mycards)  

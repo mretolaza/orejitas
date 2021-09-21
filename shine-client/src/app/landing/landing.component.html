@@ -16,7 +16,9 @@
       <div class="container py-lg-2 d-flex mx-auto">
         <button type="button" class="btn btn-primary" (click)="start()" *ngIf="isAdmin && !isGameIniciated">Iniciar
           Juego</button>
-        <h2 class="display-3 text-white ml-5">{{nickname}} estas en la sala: {{roomid}}</h2>
+        <h2 class="text-white ml-1">
+          <span class="text-uppercase">{{nickname}}</span> estas en la sala: 
+          <span class="badge-pill badge-primary">{{roomid}}</span></h2>
         <ngb-alert type="danger" class="ml-3 flex-grow-1" [dismissible]="true" *ngIf="showed" (close)="close()">
           <span class="alert-inner--text"> <strong>Error! </strong>{{ errorMessage }}</span>
         </ngb-alert>
