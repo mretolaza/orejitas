@@ -231,9 +231,13 @@ export class LandingComponent implements OnInit {
   }
 
   selectCard(carta:any, img) {
+
     this.select = true
 
     // TODO validar que la carta sea mayor a la carta sobre la mesa
+    if (carta.num <= this.tableCard.num) {
+      return;
+    }
 
     this.imgSelected = img;
     this.selectedCard = carta;
@@ -244,6 +248,9 @@ export class LandingComponent implements OnInit {
     this.change = true
 
     // TODO validar que la carta sea de color diferente a la carta sobre la mesa
+    if (carta.fig == this.tableCard.fig) {
+      return;
+    }
 
     this.imgSelectedChange = img;
     this.selectedChangeCard = carta;
