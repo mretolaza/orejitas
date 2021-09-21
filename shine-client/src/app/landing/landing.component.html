@@ -14,12 +14,34 @@
         <span></span>
       </div>
       <div class="container py-lg-2 d-flex mx-auto">
-        <button type="button" class="btn btn-primary" (click)="start()" *ngIf="isAdmin && !isGameIniciated">Iniciar Juego</button>
-        <h2 class="display-3 text-white ml-5" >Orejitas sala: {{roomid}}</h2>
-        <ngb-alert type="danger" class="ml-3 flex-grow-1" [dismissible]="true" *ngIf="showed"  (close)="close()" >
-          <span class="alert-inner--text">  <strong>Error! </strong>{{ errorMessage }}</span>
+        <button type="button" class="btn btn-primary" (click)="start()" *ngIf="isAdmin && !isGameIniciated">Iniciar
+          Juego</button>
+        <h2 class="display-3 text-white ml-5">Orejitas sala: {{roomid}}</h2>
+        <ngb-alert type="danger" class="ml-3 flex-grow-1" [dismissible]="true" *ngIf="showed" (close)="close()">
+          <span class="alert-inner--text"> <strong>Error! </strong>{{ errorMessage }}</span>
         </ngb-alert>
       </div>
+
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-12">
+            <div class="row row-grid" *ngIf="players">
+              <div class="col-lg-2 col-xs-2" *ngFor="let player of players">
+                <div class="card shadow border-0">
+                  <div class="card-body p-2">
+                    <div class="text-center">
+                      <img src="./assets/img/cards/rev.svg" style="width: 50px;" class="img-fluid border">
+                      <p class="m-0 small">{{player.name}}</p>
+                      <p class="m-0 small">{{player.countCards}} cartas</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="container py-lg-md d-flex mx-auto">
         <div class="col px-0">
           <div class="row">
@@ -29,7 +51,7 @@
                   <div class="card-body">
                     <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
                     <img src="./assets/img/cards/rev.svg" style="width: 150px;" class="img-fluid border">
-                    <button type="button" (click)="addcard()" class="btn btn-success mt-4">Tomar Carta</button>                  
+                    <button type="button" (click)="addcard()" class="btn btn-success mt-4">Tomar Carta</button>
                   </div>
                 </div>
               </div>
@@ -60,19 +82,23 @@
             <div class="col-lg-6">
               <div class="card shadow border-0 chat-height">
                 <div class="card-body">
-                  <div class="container px-0 h-100 d-flex flex-column" >
+                  <div class="container px-0 h-100 d-flex flex-column">
                     <div class="row flex-grow-1 mb-3 message-height">
-                      <ul class="list-unstyled" >
+                      <ul class="list-unstyled">
                         <li class="py-2" *ngFor='let message of messages'>
-                          <div class="badge badge-circle mr-3" [ngClass]="message.nickname ? 'badge-success':'badge-warning'"><i class="ni ni-notification-70"></i></div>
+                          <div class="badge badge-circle mr-3"
+                            [ngClass]="message.nickname ? 'badge-success':'badge-warning'"><i
+                              class="ni ni-notification-70"></i></div>
                           {{(message.nickname) ? message.nickname + ' dice: ' : ''}}{{message.message}}
                         </li>
                       </ul>
                     </div>
                     <div class="row h-auto">
                       <div class="form-group d-flex col mb-0">
-                        <input type="text" [(ngModel)]="message" (keyup.enter)="sendChat()" placeholder="Ingresa tu mensaje" class="form-control flex-grow-1" />
-                        <button href="javascript:void(0)" class="btn btn-success btn-icon-only rounded-circle ml-2" (click)="sendChat()"><i class="fa fa-send"></i></button>
+                        <input type="text" [(ngModel)]="message" (keyup.enter)="sendChat()"
+                          placeholder="Ingresa tu mensaje" class="form-control flex-grow-1" />
+                        <button href="javascript:void(0)" class="btn btn-success btn-icon-only rounded-circle ml-2"
+                          (click)="sendChat()"><i class="fa fa-send"></i></button>
                       </div>
                     </div>
                   </div>
@@ -85,13 +111,15 @@
       </div>
       <!-- SVG separator -->
       <div class="separator separator-bottom separator-skew">
-        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
+          xmlns="http://www.w3.org/2000/svg">
           <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
         </svg>
       </div>
     </section>
     <!-- 1st Hero Variation -->
   </div>
+  
   <section class="section section-lg pt-lg-0 mt--200">
     <div class="container">
       <div class="row justify-content-center">
@@ -102,7 +130,7 @@
                 <div class="card-body">
                   <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
                   <img [src]="carta.img" style="width: 150px;" class="img-fluid border">
-                  <button href="javascript:void(0)" class="btn btn-success mt-4">Tirar</button>                  
+                  <button href="javascript:void(0)" class="btn btn-success mt-4">Tirar</button>
                 </div>
               </div>
             </div>
@@ -111,5 +139,5 @@
       </div>
     </div>
   </section>
-  
+
 </main>

@@ -138,8 +138,8 @@ export class LandingComponent implements OnInit {
         }
         this.messages.push(sms);
 
-        console.log('this.players---->', this.players)
-        console.log('this.mycards---->', this.mycards)
+        // console.log('this.players---->', this.players)
+        // console.log('this.mycards---->', this.mycards)
         
       } else {
         this.errorMessage = 'Error al tratar de iniciar el juego';
@@ -160,10 +160,10 @@ export class LandingComponent implements OnInit {
         console.log('this.players---->', this.players)
         console.log('this.mycards---->', this.mycards)
         
-      } else {
+      } /*else {
         this.errorMessage = 'Error al sacar una carta del mazo';
         this.showed = true;
-      }
+      }*/
     })
 
   }
