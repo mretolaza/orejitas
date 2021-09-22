@@ -231,27 +231,26 @@ export class LandingComponent implements OnInit {
   }
 
   selectCard(carta:any, img) {
-
-    this.select = true
-
     // TODO validar que la carta sea mayor a la carta sobre la mesa
-    if (carta.num <= this.tableCard.num) {
+    if ( (carta.fig != this.tableCard.fig )) {
       return;
     }
 
+    this.select = true
+    
     this.imgSelected = img;
     this.selectedCard = carta;
     console.log('mover carta', this.selectedCard);
   }
 
   changeCard(carta:any, img) {
-    this.change = true
-
     // TODO validar que la carta sea de color diferente a la carta sobre la mesa
-    if (carta.fig == this.tableCard.fig) {
+    if (!this.select || (this.selectedCard.num <= this.tableCard.num) || (carta.fig == this.tableCard.fig)) {
       return;
     }
-
+    
+    this.change = true
+    
     this.imgSelectedChange = img;
     this.selectedChangeCard = carta;
     console.log('mover carta', this.selectedChangeCard);
