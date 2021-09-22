@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { SocketWebService } from '../service/socket-web.service';
@@ -9,9 +9,11 @@ import { SocketWebService } from '../service/socket-web.service';
   styleUrls: ['./landing.component.scss']
 })
 
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, AfterViewChecked {
   focus: any;
   focus1: any;
+
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   message: string = '';
   url = '';
@@ -145,6 +147,9 @@ export class LandingComponent implements OnInit {
     })
 
   }
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -155,6 +160,14 @@ export class LandingComponent implements OnInit {
         this.count = 1;
       }
     });
+
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) { }                 
   }
 
   addcard() {
