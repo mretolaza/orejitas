@@ -25,23 +25,23 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   isGameIniciated: boolean = false;
   messages = [];
   count: number = 0;
-  players; 
+  players;
   otherPlayers;
   mycards;
   turn;
   tableCard;
-  select:boolean = false;
-  change:boolean = false;
-    
+  select: boolean = false;
+  change: boolean = false;
+
   selectedCard;
   selectedChangeCard;
   imgSelected = './assets/img/cards/rev.svg';
   imgSelectedChange = './assets/img/cards/rev.svg';
 
   constructor(
-    private socketWebService: SocketWebService, 
+    private socketWebService: SocketWebService,
     private route: ActivatedRoute,
-  ) { 
+  ) {
     this.socketWebService.outCreateRoom.subscribe(res => {
       console.log('escuchadno--->');
       console.log('outCreateRoom--->', res.data);
@@ -59,28 +59,28 @@ export class LandingComponent implements OnInit, AfterViewChecked {
     })
 
     this.socketWebService.outChat.subscribe(res => {
-      if (res){
+      if (res) {
         const sms = {
           message: res.data.message,
           nickname: res.data.nickname,
         }
         this.messages.push(sms);
       }
-      
+
     })
 
     this.socketWebService.outStartRoom.subscribe(res => {
       if (res.success) {
         this.players = res.data.players;
-        this.otherPlayers = res.data.players.filter( p => p.name != this.nickname)
+        this.otherPlayers = res.data.players.filter(p => p.name != this.nickname)
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
-        
-        this.mycards.forEach( card => {
+
+        this.mycards.forEach(card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
 
         this.turn = this.players.find((player) => player.turn == true)
-        
+
         const sms = {
           message: 'Play now!!! Turn of ' + this.turn.name,
           nickname: null,
@@ -89,7 +89,7 @@ export class LandingComponent implements OnInit, AfterViewChecked {
 
         // console.log('this.players---->', this.players)
         // console.log('this.mycards---->', this.mycards)
-        
+
       } else {
         this.errorMessage = 'Error al tratar de iniciar el juego';
         this.showed = true;
@@ -101,15 +101,15 @@ export class LandingComponent implements OnInit, AfterViewChecked {
       console.log(res);
       if (res.success) {
         this.players = res.data.players;
-        this.otherPlayers = res.data.players.filter( p => p.name != this.nickname)
+        this.otherPlayers = res.data.players.filter(p => p.name != this.nickname)
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
-        this.mycards.forEach( card => {
+        this.mycards.forEach(card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
 
         console.log('this.players---->', this.players)
         console.log('this.mycards---->', this.mycards)
-        
+
       } /*else {
         this.errorMessage = 'Error al sacar una carta del mazo';
         this.showed = true;
@@ -120,26 +120,26 @@ export class LandingComponent implements OnInit, AfterViewChecked {
       console.log(res);
       if (res.success) {
         this.players = res.data.players;
-        this.otherPlayers = res.data.players.filter( p => p.name != this.nickname)
+        this.otherPlayers = res.data.players.filter(p => p.name != this.nickname)
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
-        
-        this.mycards.forEach( card => {
+
+        this.mycards.forEach(card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
 
         this.tableCard = res.data.tablecard
-        
+
         this.turn = this.players.find((player) => player.turn == true)
         const sms = {
           message: 'Turn of ' + this.turn.name,
           nickname: null,
         }
         this.messages.push(sms);
-        
-        console.log('this.tableCard---->',this.tableCard)
+
+        console.log('this.tableCard---->', this.tableCard)
         console.log('this.players---->', this.players)
-        console.log('this.mycards---->', this.mycards)  
-        
+        console.log('this.mycards---->', this.mycards)
+
       } /*else {
         this.errorMessage = 'Error al sacar una carta del mazo';
         this.showed = true;
@@ -166,8 +166,8 @@ export class LandingComponent implements OnInit, AfterViewChecked {
 
   scrollToBottom(): void {
     try {
-        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch(err) { }                 
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 
   addcard() {
@@ -180,12 +180,12 @@ export class LandingComponent implements OnInit, AfterViewChecked {
       },
     };
 
-    console.log('addc',addc)
-    this.socketWebService.takeCard(addc); 
+    console.log('addc', addc)
+    this.socketWebService.takeCard(addc);
   }
 
   start() {
-     
+
     const startr = {
       type: 'startRoom',
       data: {
@@ -194,9 +194,9 @@ export class LandingComponent implements OnInit, AfterViewChecked {
       },
     };
 
-    this.isGameIniciated = true;     
-    console.log('startr',startr)
-    this.socketWebService.startRoom(startr); 
+    this.isGameIniciated = true;
+    console.log('startr', startr)
+    this.socketWebService.startRoom(startr);
   }
 
   sendChat() {
@@ -210,26 +210,26 @@ export class LandingComponent implements OnInit, AfterViewChecked {
         },
       };
       this.message = ''
-      this.socketWebService.chatSend(message); 
+      this.socketWebService.chatSend(message);
     }
   }
 
   makeMove() {
 
     if (this.select) {
-      const  move = {
-        type:'makeMove',
-        data:{
+      const move = {
+        type: 'makeMove',
+        data: {
           roomId: this.roomid,
           nickname: this.nickname,
           card: {
-            num: this.selectedCard.num, 
+            num: this.selectedCard.num,
             fig: this.selectedCard.fig,
             img: this.selectedCard.fig + '_' + this.selectedCard.num
           },
           change: this.change,
           change_card: {
-            num: this.change ? this.selectedChangeCard.num : null, 
+            num: this.change ? this.selectedChangeCard.num : null,
             fig: this.change ? this.selectedChangeCard.fig : null,
             img: this.change ? this.selectedChangeCard.fig + '_' + this.selectedChangeCard.num : null
           }
@@ -237,33 +237,33 @@ export class LandingComponent implements OnInit, AfterViewChecked {
       }
 
       console.log('move', move);
-      this.socketWebService.makeMove(move); 
+      this.socketWebService.makeMove(move);
       this.removeImgSelectedChange();
     }
-    
+
   }
 
-  selectCard(carta:any, img) {
+  selectCard(carta: any, img) {
     // TODO validar que la carta sea mayor a la carta sobre la mesa
-    if ( (carta.fig != this.tableCard.fig )) {
+    if ((carta.fig != this.tableCard.fig)) {
       return;
     }
 
     this.select = true
-    
+
     this.imgSelected = img;
     this.selectedCard = carta;
     console.log('mover carta', this.selectedCard);
   }
 
-  changeCard(carta:any, img) {
+  changeCard(carta: any, img) {
     // TODO validar que la carta sea de color diferente a la carta sobre la mesa
     if (!this.select || (this.selectedCard.num <= this.tableCard.num) || (carta.fig == this.tableCard.fig)) {
       return;
     }
-    
+
     this.change = true
-    
+
     this.imgSelectedChange = img;
     this.selectedChangeCard = carta;
     console.log('mover carta', this.selectedChangeCard);
@@ -274,7 +274,7 @@ export class LandingComponent implements OnInit, AfterViewChecked {
     this.change = false;
     this.imgSelected = './assets/img/cards/rev.svg';
     this.imgSelectedChange = './assets/img/cards/rev.svg';
-    
+
   }
 
   close = () => this.showed = false;

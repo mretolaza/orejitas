@@ -17,8 +17,9 @@
         <button type="button" class="btn btn-primary" (click)="start()" *ngIf="isAdmin && !isGameIniciated">Iniciar
           Juego</button>
         <h2 class="text-white ml-1">
-          <span class="text-uppercase">{{nickname}}</span> estas en la sala: 
-          <span class="badge-pill badge-primary">{{roomid}}</span></h2>
+          <span class="text-uppercase">{{nickname}}</span> estas en la sala:
+          <span class="badge-pill badge-primary">{{roomid}}</span>
+        </h2>
         <ngb-alert type="danger" class="ml-3 flex-grow-1" [dismissible]="true" *ngIf="showed" (close)="close()">
           <span class="alert-inner--text"> <strong>Error! </strong>{{ errorMessage }}</span>
         </ngb-alert>
@@ -62,7 +63,8 @@
               <div class="col-lg-12 col-xs-12 mb-5">
                 <div class="card shadow border-0">
                   <div class="card-body text-center" *ngIf="tableCard">
-                    <img [src]="'./assets/img/cards/' + tableCard.img + '.svg'" style="width: 125px;" class="img-fluid border">
+                    <img [src]="'./assets/img/cards/' + tableCard.img + '.svg'" style="width: 125px;"
+                      class="img-fluid border">
                   </div>
                 </div>
               </div>
@@ -144,8 +146,8 @@
                 <div class="card-body text-center">
                   <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
                   <img [src]="carta.img" style="width: 150px;" class="img-fluid border">
-                  <button class="btn btn-info btn-icon-only rounded-circle mt-2"
-                    (click)="selectCard(carta, carta.img)" *ngIf="!select"><i class="fa fa-upload"></i></button>
+                  <button class="btn btn-info btn-icon-only rounded-circle mt-2" (click)="selectCard(carta, carta.img)"
+                    *ngIf="!select"><i class="fa fa-upload"></i></button>
                   <button class="btn btn-warning btn-icon-only rounded-circle mt-2"
                     (click)="changeCard(carta, carta.img)" *ngIf="!change"><i class="fa fa-random"></i></button>
                 </div>
