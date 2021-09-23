@@ -360,9 +360,21 @@ io.on('connection', function (socket) {
         const playerMove = roomGame.players.find( (player) => player.name == res.data.nickname);
         const playerCards = playerMove.cards;
 
+        let ipm = roomGame.players.indexOf(playerMove);
+        
+        if (ipm == (roomGame.players.length - 1)) {
+          ipm = 0;
+        } else {
+          ipm += 1; 
+        }
+
+        const nexPlayer = roomGame.players[ipm];
+        
+        playerMove.turn = false;
+        nexPlayer.turn = true;
+
         const rmcard = playerCards.find((c) => c.num == res.data.card.num && c.fig == res.data.card.fig);
-        console.log('quitar', rmcard);
-        console.log('quitar', res.data.card);
+        
         playerCards.splice(playerCards.indexOf(rmcard), 1);
         roomGame.table_card = res.data.card
 
@@ -378,9 +390,21 @@ io.on('connection', function (socket) {
         const playerMove = roomGame.players.find( (player) => player.name == res.data.nickname)
         const playerCards = playerMove.cards
 
+        let ipm = roomGame.players.indexOf(playerMove);
+        
+        if (ipm == (roomGame.players.length - 1)) {
+          ipm = 0;
+        } else {
+          ipm += 1; 
+        }
+
+        const nexPlayer = roomGame.players[ipm];
+        
+        playerMove.turn = false;
+        nexPlayer.turn = true;
+
         const rmcard = playerCards.find((c) => c.num == res.data.card.num && c.fig == res.data.card.fig);
-        console.log('quitar', rmcard);
-        console.log('quitar', res.data.card);
+        
         playerCards.splice(playerCards.indexOf(rmcard), 1);
         roomGame.table_card = res.data.card
 
