@@ -53,7 +53,7 @@ export class LandingComponent implements OnInit, AfterViewChecked {
     this.socketWebService.outCreateRoom.subscribe(res => {
       console.log('escuchadno--->');
       console.log('outCreateRoom--->', res.data);
-      //this.sala = res.data.createdId;
+      
     })
 
     this.socketWebService.outjoinRoom.subscribe(res => {
