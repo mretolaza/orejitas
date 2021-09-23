@@ -1,5 +1,7 @@
 import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+
 
 import { SocketWebService } from '../service/socket-web.service';
 
@@ -14,6 +16,7 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   focus1: any;
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @ViewChild('modalBuilding', { static: false }) private modalBuilding: NgbModal;
 
   message: string = '';
   url = '';
@@ -27,11 +30,15 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   count: number = 0;
   players;
   otherPlayers;
+  playerwin;
   mycards;
   turn;
   tableCard;
   select: boolean = false;
   change: boolean = false;
+  closeResult: string;
+  roomdeck;
+  endGame: boolean = false;
 
   selectedCard;
   selectedChangeCard;
@@ -41,6 +48,7 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   constructor(
     private socketWebService: SocketWebService,
     private route: ActivatedRoute,
+    private modalService: NgbModal
   ) {
     this.socketWebService.outCreateRoom.subscribe(res => {
       console.log('escuchadno--->');
@@ -75,6 +83,8 @@ export class LandingComponent implements OnInit, AfterViewChecked {
         this.otherPlayers = res.data.players.filter(p => p.name != this.nickname)
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
 
+        this.mycards = this.players.find((player) => player.name == this.nickname).cards;
+
         this.mycards.forEach(card => {
           card.img = './assets/img/cards/' + card.img + '.svg'
         });
@@ -87,11 +97,13 @@ export class LandingComponent implements OnInit, AfterViewChecked {
         }
         this.messages.push(sms);
 
+        this.roomdeck = res.data.roomdeck;
+
         // console.log('this.players---->', this.players)
         // console.log('this.mycards---->', this.mycards)
 
       } else {
-        this.errorMessage = 'Error al tratar de iniciar el juego';
+        this.errorMessage = res.data.message;
         this.showed = true;
       }
     })
@@ -109,7 +121,7 @@ export class LandingComponent implements OnInit, AfterViewChecked {
 
         console.log('this.players---->', this.players)
         console.log('this.mycards---->', this.mycards)
-
+        this.roomdeck = res.data.roomdeck;
       } /*else {
         this.errorMessage = 'Error al sacar una carta del mazo';
         this.showed = true;
@@ -120,26 +132,40 @@ export class LandingComponent implements OnInit, AfterViewChecked {
       console.log(res);
       if (res.success) {
         this.players = res.data.players;
-        this.otherPlayers = res.data.players.filter(p => p.name != this.nickname)
+        this.otherPlayers = res.data.players.filter(p => p.name != this.nickname);
         this.mycards = this.players.find((player) => player.name == this.nickname).cards;
-
-        this.mycards.forEach(card => {
-          card.img = './assets/img/cards/' + card.img + '.svg'
-        });
-
-        this.tableCard = res.data.tablecard
-
-        this.turn = this.players.find((player) => player.turn == true)
-        const sms = {
-          message: 'Turn of ' + this.turn.name,
-          nickname: null,
+        
+        this.playerwin = this.players.find((player) => player.countCards == 0);
+  
+        if (this.playerwin) {
+          this.endGame = true;
+          const sms = {
+            message: this.turn.name + ' win!!',
+            nickname: this.roomid,
+          }
+          this.messages.push(sms);
+        } else {
+          this.mycards.forEach(card => {
+            card.img = './assets/img/cards/' + card.img + '.svg'
+          });
+  
+          this.tableCard = res.data.tablecard
+  
+          this.turn = this.players.find((player) => player.turn == true)
+          const sms = {
+            message: 'Turn of ' + this.turn.name,
+            nickname: null,
+          }
+          this.messages.push(sms);
+  
+          // console.log('this.tableCard---->', this.tableCard)
+          // console.log('this.players---->', this.players)
+          // console.log('this.mycards---->', this.mycards)
+          this.roomdeck = res.data.roomdeck;
+  
         }
-        this.messages.push(sms);
 
-        console.log('this.tableCard---->', this.tableCard)
-        console.log('this.players---->', this.players)
-        console.log('this.mycards---->', this.mycards)
-
+        
       } /*else {
         this.errorMessage = 'Error al sacar una carta del mazo';
         this.showed = true;
@@ -171,6 +197,10 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   }
 
   addcard() {
+
+    if (this.endGame) {
+      return
+    }
 
     const addc = {
       type: 'takeCard',
@@ -243,11 +273,28 @@ export class LandingComponent implements OnInit, AfterViewChecked {
 
   }
 
-  selectCard(carta: any, img) {
-    // TODO validar que la carta sea mayor a la carta sobre la mesa
-    if ((carta.fig != this.tableCard.fig)) {
-      return;
+  checkTurnMove(content, card, img) {
+
+    if (this.turn.name != this.nickname) {
+      this.modalService.open(content, { windowClass: 'modal-danger', size: 'sm', centered: true }).result.then((result) => {
+        this.closeResult = `Closed with: ${result}`;
+      }, (reason) => {
+        this.closeResult = `Dismissed`;
+      });
+      return
     }
+    
+    this.selectCard(card, img)
+  }
+
+  selectCard(carta: any, img) {
+    
+    // // TODO validar que la carta sea mayor a la carta sobre la mesa
+    // if (this.tableCard){
+    //   if ((carta.fig != this.tableCard.fig)) {
+    //     return;
+    //   }
+    // }
 
     this.select = true
 
@@ -256,11 +303,25 @@ export class LandingComponent implements OnInit, AfterViewChecked {
     console.log('mover carta', this.selectedCard);
   }
 
-  changeCard(carta: any, img) {
-    // TODO validar que la carta sea de color diferente a la carta sobre la mesa
-    if (!this.select || (this.selectedCard.num <= this.tableCard.num) || (carta.fig == this.tableCard.fig)) {
-      return;
+  checkTurnChange(content, card, img) {
+
+    if (this.turn.name != this.nickname) {
+      this.modalService.open(content, { windowClass: 'modal-danger', size: 'sm', centered: true }).result.then((result) => {
+        this.closeResult = `Closed with: ${result}`;
+      }, (reason) => {
+        this.closeResult = `Dismissed`;
+      });
+      return
     }
+    
+    this.changeCard(card, img)
+  }
+
+  changeCard(carta: any, img) {
+    // // TODO validar que la carta sea de color diferente a la carta sobre la mesa
+    // if (!this.select || (this.selectedCard.num <= this.tableCard.num) || (carta.fig == this.tableCard.fig)) {
+    //   return;
+    // }
 
     this.change = true
 
@@ -278,4 +339,25 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   }
 
   close = () => this.showed = false;
+
+  
+  faq(content) {
+    this.modalService.open(content, { windowClass: 'modal-mini', size: 'lg', centered: true }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed`;
+    });
+  }
+
+  emptyDeck(deck) {
+    if (deck == 0) {
+      this.endGame = true
+
+      const sms = {
+        message: 'End Game!',
+        nickname: this.roomid,
+      }
+      this.messages.push(sms);
+    }
+  }
 }
