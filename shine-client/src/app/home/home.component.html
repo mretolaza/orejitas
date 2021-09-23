@@ -23,7 +23,7 @@
             <div class="col-sm-12">
 
             </div>
-            <div class="col-lg-6 text-center">
+            <div class="col-lg-9 text-center">
               <div class="btn-wrapper mt-5 mb-5" *ngIf="buttons">
                 <button class="btn btn-lg btn-white btn-icon mb-3 mb-sm-0" (click)="goToForm(true)">
                   Crear una sala
@@ -31,9 +31,12 @@
                 <button class="btn btn-lg btn-github btn-icon mb-3 mb-sm-0" (click)="goToForm(false)">
                   Unirse a la sala
                 </button>
+                <button class="btn btn-lg btn-default btn-icon mb-3 mb-sm-0" (click)="faq(ayuda)">
+                  Ayuda
+                </button>
               </div>
 
-              <div class="col-lg-12" *ngIf="!buttons && isEnter">
+              <div class="col-lg-9 ml-lg" *ngIf="!buttons && isEnter">
                 <div class="card bg-secondary shadow border-0">
                   <div class="card-header bg-white pb-2">
                     <button class="btn btn-icon btn-3 btn-outline-primary rounded-pill" type="button"
@@ -101,7 +104,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-12" *ngIf="!buttons && !isEnter">
+              <div class="col-lg-9 ml-lg" *ngIf="!buttons && !isEnter">
                 <div class="card bg-secondary shadow border-0">
                   <div class="card-header bg-white pb-2">
                     <button class="btn btn-icon btn-3 btn-outline-primary rounded-pill" type="button"
@@ -157,3 +160,51 @@
     </section>
   </div>
 </main>
+
+
+<ng-template #ayuda let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-title-default">Orejitas</h6>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="small">Orejitas es un juego de cartas con estrategia, que consiste en deshacerse de las cartas de la mano
+        lo más pronto posible, gana el jugador que se quedé sin ninguna carta, o el que menos cartas tenga si se acaba
+        el mazo.</p>
+      <ul class="list-unstyled">
+        <li class="py-2 text-danger">¿Cómo se juega OREJITAS?</li>
+        <li class="py-2 small">Cuando ingresen todos los jugadores que tiene permitido la sala,
+          entonces se realizará el reparto de cartas.</li>
+        <li class="py-2 small">Cada jugador recibirá 5 cartas. Si juegan el máximo de jugadores permitido (7) entonces la mesa
+          se quedará
+          con 17 cartas para su interacción a lo largo del juego</li>
+        <li class="py-2 small">Se seleccionar de forma aleatoria al primer jugador. Dicho jugador, establece la figura con la
+          cual iniciará el juego.</li>
+        <li class="py-2 small">Todos los jugadores deberán de colocar una carta de la misma figura para poder realizar una
+          jugada correcta</li>
+      </ul>
+      <ul class="list-unstyled">
+        <li class="py-2 text-danger">Modo: Cambio de JUEGO</li>
+        <li class="py-2 small">Para poder realizar un cambio de juego, deberá de lanzar una carta con la misma figura del
+          juego actual y deberá de seleccionar dentro de su mano una carta que sea mayor a la carta del jugador.</li>
+        <li class="py-2 small">Los jugadores deberán de elegir una carta de la figura que marca el nuevo juego</li>
+        <li class="py-2 small">Seleccionar cartas de la MESA</li>
+        <li class="py-2 small">Si no tienes dentro de tu mano una carta de la misma figura que la carta que se encuentra en
+          juego, podrás agarrar de la mesa hasta obtener una carta correcta.</li>
+        <li class="py-2 small">Si la mesa se queda con 0 cartas entonces TERMINA EL JUEGO</li>
+      </ul>
+      <ul class="list-unstyled">
+        <li class="py-2 text-danger">¿Quién es el GANADOR?</li>
+        <li class="py-2 small">El primer jugador que tenga 0 cartas en su mano GANA</li>
+        <li class="py-2 small">El jugador con la menor cantidad de cartas, si y solo sí, la mesa del juego se queda sin cartas
+          para continuar</li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-link  ml-auto" data-dismiss="modal" (click)="c('Close click')">OK</button>
+    </div>
+  </div>
+</ng-template>
