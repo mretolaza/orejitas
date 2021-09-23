@@ -185,14 +185,6 @@ io.on('connection', function (socket) {
           roomToStart.roomDeck = deckRoom;
           response.success = true;
 
-          // const data = {
-          //   start: roomToStart.start,
-          //   turnPlayer: roomToStart.turnPlayer,
-          //   players: roomToStart.players,
-          //   roomdeck: roomToStart.roomDeck,
-          // }
-          // response.data = data;
-
           for await (const player of playersList) {
             let playersret = []
             for (const newPlayer of playersList) {
