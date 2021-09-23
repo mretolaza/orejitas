@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 
 import { SocketWebService } from '../service/socket-web.service';
 
@@ -11,9 +12,13 @@ import { SocketWebService } from '../service/socket-web.service';
 })
 
 export class HomeComponent implements OnInit {
+
+  closeResult;
+
   constructor(
     private router: Router,
     private socketWebService: SocketWebService,
+    private modalService: NgbModal
   ) {
 
     this.socketWebService.outCreateRoom.subscribe(res => {
@@ -152,5 +157,13 @@ export class HomeComponent implements OnInit {
 
   focus;
   focus1;
+
+  faq(content) {
+    this.modalService.open(content, { windowClass: 'modal-mini', size: 'lg', centered: true }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed`;
+    });
+  }
 
 }
