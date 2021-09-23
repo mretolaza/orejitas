@@ -1,0 +1,180 @@
+// respuesta para crear una sala
+// el server lo emite a traves del evento createRoom
+{
+  sparkId: 1,
+  type: 'response',
+  success: true,
+  data: {
+    createdId: sala,
+    roomdeck: numero,
+    tablecard: null
+  },
+};
+
+// respuesta para ingresar en una sala
+// el server lo emite a traves del evento joinRoom
+{
+  sparkId: 2,
+  type: 'response',
+  success: false,
+  data: {
+    message: mensaje,
+  },
+};
+
+
+{
+  sparkId: 2,
+  type: 'response',
+  success: true,
+  data: {
+    roomid: sala,
+    name: texto,
+    description: texto,
+    message: texto,
+    players: array con info de jugadores,
+  },
+};
+
+// respuesta para chatear en una sala
+// el server lo emite a traves del evento chatRoom
+{
+  sparkId: 3,
+  type: 'response',
+  success: true,
+  data: res.data,
+};
+
+// respuesta para iniciar el juego en una sala
+// el server lo emite a traves del evento startRoom
+{
+  sparkId: 4,
+  type: 'response',
+  success: false,
+  data: {
+    message: text,
+  },
+};
+
+// si la respuesta es positiva se emite de forma individual a cada 
+// jugador en la sala por el evento startRoom
+// cada jugador podrá ver unicamente sus cartas, 
+// en el listado de los otros jugadores las cartas de los demás las recibe null
+{
+  sparkId: 4,
+  type: 'response',
+  success: true,
+  data: {
+    start: boolean,
+    players: [
+      {
+        name: text,
+        socket: text,
+        room: text,
+        cards: [
+          {
+            num: numero,
+            fig: numero, 
+            img: texto
+          },
+        ],
+        countCards: numero,
+        turn: boolean
+      }
+    ],
+    roomdeck: numero,
+    tablecard: {
+      num: numero,
+      fig: numero, 
+      img: texto
+    },
+  },
+};
+
+// respuesta para tomar una carta del mazo, actualizando a todos los jugadores
+// el server lo emite a traves del evento takeCard
+{
+  sparkId: 5,
+  type: 'response',
+  success: false,
+  data: {
+    message: texto,
+  },
+};
+
+// la respuesta se emite de forma directa  a cada jugador 
+// en la sala, impidiendo que puedan ver las cartas de los demás
+{
+  sparkId: 5,
+  type: 'response',
+  success: true,
+  data: {
+    start: boolean,
+    players: [
+      {
+        name: text,
+        socket: text,
+        room: text,
+        cards: [
+          {
+            num: numero,
+            fig: numero, 
+            img: texto
+          },
+        ],
+        countCards: numero,
+        turn: boolean
+      }
+    ],
+    roomdeck: numero,
+    tablecard: {
+      num: numero,
+      fig: numero, 
+      img: texto
+    },
+  },
+};
+
+// respuesta realizar un movimiento 
+// el server lo emite a traves del evento startRoom
+{
+  sparkId: 6,
+  type: 'response',
+  success: false,
+  data: {
+    message: mensaje,
+  },
+};
+
+// la respuesta se emite de forma directa  
+// a cada jugadore en la sala, impidiendo que puedan ver las cartas de los demás
+{
+  sparkId: 6,
+  type: 'response',
+  success: true,
+  data: {
+    start: boolean,
+    players: [
+      {
+        name: text,
+        socket: text,
+        room: text,
+        cards: [
+          {
+            num: numero,
+            fig: numero, 
+            img: texto
+          },
+        ],
+        countCards: numero,
+        turn: boolean
+      }
+    ],
+    roomdeck: numero,
+    tablecard: {
+      num: numero,
+      fig: numero, 
+      img: texto
+    },
+  },
+};
