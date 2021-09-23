@@ -1,0 +1,67 @@
+// crea una sala
+{
+  type: 'createRoom',
+  data: {
+    name: texto,
+    description: texto,
+    maxPlayers: numero,
+    userNickname: texto
+  },
+}
+
+// ingresa a una sala
+{
+  type: 'joinRoom',
+  data: {
+    roomId: texto,
+    nickname: texto
+  },
+};
+
+// inicia una partida en una sala
+{
+  type: 'startRoom',
+  data: {
+    roomId: texto,
+    nickname: texto
+  },
+};
+
+// toma una carta del maso y se la agrega al jugador
+{
+  type: 'takeCard',
+  data: {
+    roomId: texto,
+    nickname: texto
+  },
+};
+
+// enviar mensajes al chat de la sala
+{
+  type: 'chatRoom',
+  data: {
+    roomId: texto,
+    nickname: texto,
+    message: texto
+  },
+};
+
+// hacer un movimiento y/o cambiar de color
+{
+  type: 'makeMove',
+  data: {
+    roomId: texto,
+    nickname: texto,
+    card: {
+      num: numero,
+      fig: numero,
+      img: texto
+    },
+    change: boolean,
+    change_card: {
+      num: numero,
+      fig: numero,
+      img: texto
+    }
+  }
+}
