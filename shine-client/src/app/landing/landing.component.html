@@ -16,6 +16,9 @@
       <div class="container py-lg-2 d-flex mx-auto">
         <button type="button" class="btn btn-primary" (click)="start()" *ngIf="isAdmin && !isGameIniciated">Iniciar
           Juego</button>
+          <button class="btn btn-default btn-icon-only rounded-circle ml-2 mt-2" (click)="faq(ayuda)">
+            <i class="fa fa-question"></i>
+          </button>          
         <h2 class="text-white ml-1">
           <span class="text-uppercase">{{nickname}}</span> estas en la sala:
           <span class="badge-pill badge-primary">{{roomid}}</span>
@@ -51,7 +54,7 @@
             <div class="col-lg-3">
               <div class="col-lg-12 col-xs-12 mb-5">
                 <div class="card card-lift--hover shadow border-0">
-                  <div class="card-body text-center" *ngIf="mycards">
+                  <div class="card-body text-center" *ngIf="roomdeck && roomdeck > 0">
                     <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
                     <img src="./assets/img/cards/rev.svg" style="width: 125px;" class="img-fluid border">
                     <button type="button" (click)="addcard()" class="btn btn-success mt-4">Tomar Carta</button>
@@ -68,18 +71,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <h1 class="display-3  text-white">Holi orejitas
-                <span>mesa: 4</span>
-              </h1>
-              <div class="btn-wrapper">
-                
-                <button class="btn btn-white btn-icon mb-3 mb-sm-0" (click)="start()">
-                  Iniciar {{roomid}}
-                 </button>
-                <button class="btn btn-white btn-icon mb-3 mb-sm-0" (click)="addcard()">
-                  Tomar carta
-                 </button>
-              </div> -->
             </div>
             <div class="col-lg-6">
               <div class="card shadow border-0 chat-height">
@@ -89,10 +80,10 @@
                       <ul class="list-unstyled">
                         <li class="py-2" *ngFor='let message of messages'>
                           <div class="badge badge-circle mr-3"
-                            [ngClass]="message.nickname ? 'badge-success':'badge-warning'"><i
-                              class="ni ni-notification-70"></i></div>
+                            [ngClass]="message.nickname ? (message.nickname == roomid  ? 'badge-info': 'badge-success') :'badge-warning'">
+                            <i [ngClass]="message.nickname ? (message.nickname == roomid  ? 'ni ni-trophy': 'ni ni-chat-round') :'ni ni-notification-70'" class=""></i></div>
                           {{(message.nickname) ? message.nickname + ' dice: ' : ''}}{{message.message}}
-                        </li>
+                        </li>                        
                       </ul>
                     </div>
                     <div class="row h-auto">
@@ -142,14 +133,14 @@
           </div>
           <div class="row row-grid" *ngIf="mycards">
             <div class="col-lg-2 col-xs-2 mb-5" *ngFor="let carta of mycards">
-              <div class="card card-lift--hover shadow border-0">
+              <div class="card card-lift--hover shadow border-0" *ngIf="!endGame">
                 <div class="card-body text-center">
                   <!-- <h4 class="text-default text-uppercase">{{carta.numero}}</h4> -->
                   <img [src]="carta.img" style="width: 150px;" class="img-fluid border">
-                  <button class="btn btn-info btn-icon-only rounded-circle mt-2" (click)="selectCard(carta, carta.img)"
+                  <button class="btn btn-info btn-icon-only rounded-circle mt-2" (click)="checkTurnMove(notetoca, carta, carta.img)"
                     *ngIf="!select"><i class="fa fa-upload"></i></button>
                   <button class="btn btn-warning btn-icon-only rounded-circle mt-2"
-                    (click)="changeCard(carta, carta.img)" *ngIf="!change"><i class="fa fa-random"></i></button>
+                    (click)="checkTurnChange(notetoca, carta, carta.img)" *ngIf="!change"><i class="fa fa-random"></i></button>
                 </div>
               </div>
             </div>
@@ -160,3 +151,89 @@
   </section>
 
 </main>
+
+
+<ng-template #classic let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-title-default">Type your modal title</h6>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+      <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary">Save changes</button>
+      <button type="button" class="btn btn-link  ml-auto" data-dismiss="modal" (click)="c('Close click')">Close</button>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #notetoca let-c="close" let-d="dismiss">
+  <div class="modal-content bg-gradient-danger">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="py-3 text-center">
+        <h1 class="display-1 mb-0">#NOTETOCA</h1>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal" (click)="c('Close click')">OK</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ayuda let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-title-default">Orejitas</h6>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="small">Orejitas es un juego de cartas con estrategia, que consiste en deshacerse de las cartas de la mano
+        lo más pronto posible, gana el jugador que se quedé sin ninguna carta, o el que menos cartas tenga si se acaba
+        el mazo.</p>
+      <ul class="list-unstyled">
+        <li class="py-2 text-danger">¿Cómo se juega OREJITAS?</li>
+        <li class="py-2 small">Cuando ingresen todos los jugadores que tiene permitido la sala,
+          entonces se realizará el reparto de cartas.</li>
+        <li class="py-2 small">Cada jugador recibirá 5 cartas. Si juegan el máximo de jugadores permitido (7) entonces la mesa
+          se quedará
+          con 17 cartas para su interacción a lo largo del juego</li>
+        <li class="py-2 small">Se seleccionar de forma aleatoria al primer jugador. Dicho jugador, establece la figura con la
+          cual iniciará el juego.</li>
+        <li class="py-2 small">Todos los jugadores deberán de colocar una carta de la misma figura para poder realizar una
+          jugada correcta</li>
+      </ul>
+      <ul class="list-unstyled">
+        <li class="py-2 text-danger">Modo: Cambio de JUEGO</li>
+        <li class="py-2 small">Para poder realizar un cambio de juego, deberá de lanzar una carta con la misma figura del
+          juego actual y deberá de seleccionar dentro de su mano una carta que sea mayor a la carta del jugador.</li>
+        <li class="py-2 small">Los jugadores deberán de elegir una carta de la figura que marca el nuevo juego</li>
+        <li class="py-2 small">Seleccionar cartas de la MESA</li>
+        <li class="py-2 small">Si no tienes dentro de tu mano una carta de la misma figura que la carta que se encuentra en
+          juego, podrás agarrar de la mesa hasta obtener una carta correcta.</li>
+        <li class="py-2 small">Si la mesa se queda con 0 cartas entonces TERMINA EL JUEGO</li>
+      </ul>
+      <ul class="list-unstyled">
+        <li class="py-2 text-danger">¿Quién es el GANADOR?</li>
+        <li class="py-2 small">El primer jugador que tenga 0 cartas en su mano GANA</li>
+        <li class="py-2 small">El jugador con la menor cantidad de cartas, si y solo sí, la mesa del juego se queda sin cartas
+          para continuar</li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-link  ml-auto" data-dismiss="modal" (click)="c('Close click')">OK</button>
+    </div>
+  </div>
+</ng-template>
