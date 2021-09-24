@@ -289,12 +289,12 @@ export class LandingComponent implements OnInit, AfterViewChecked {
 
   selectCard(carta: any, img) {
     
-    // // TODO validar que la carta sea mayor a la carta sobre la mesa
-    // if (this.tableCard){
-    //   if ((carta.fig != this.tableCard.fig)) {
-    //     return;
-    //   }
-    // }
+    // validar que la carta sea mayor a la carta sobre la mesa
+    if (this.tableCard){
+      if ((carta.fig != this.tableCard.fig)) {
+        return;
+      }
+    }
 
     this.select = true
 
@@ -318,10 +318,10 @@ export class LandingComponent implements OnInit, AfterViewChecked {
   }
 
   changeCard(carta: any, img) {
-    // // TODO validar que la carta sea de color diferente a la carta sobre la mesa
-    // if (!this.select || (this.selectedCard.num <= this.tableCard.num) || (carta.fig == this.tableCard.fig)) {
-    //   return;
-    // }
+    // TODO validar que la carta sea de color diferente a la carta sobre la mesa
+    if (!this.select || (this.selectedCard.num <= this.tableCard.num) || (carta.fig == this.tableCard.fig)) {
+      return;
+    }
 
     this.change = true
 

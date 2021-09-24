@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
         this.showed = true;
       } else {
         console.log(res.data);
-        this.router.navigate([`landing/${res.data.createdId}/${this.nickname}/${this.admin}`])
+        this.router.navigate([`game/${res.data.createdId}/${this.nickname}/${this.admin}`])
       }
     })
 
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
         this.showed = true;
       } else {
         console.log(res.data)
-        this.router.navigate([`landing/${res.data.roomid}/${this.nickname}/${this.admin}`])
+        this.router.navigate([`game/${res.data.roomid}/${this.nickname}/${this.admin}`])
       }
     })
   }
